@@ -13,6 +13,7 @@ import Help from './apps/Help';
 import ErrorSimulator from './apps/ErrorSimulator';
 import About from './apps/About';
 import PhilosophyAdvisor from './apps/PhilosophyAdvisor';
+import { FileBrowser } from './apps/FileBrowser';
 
 const Window = ({ window }) => {
   const {
@@ -74,6 +75,9 @@ const Window = ({ window }) => {
       case 'Claude Camus.exe':
         console.log('[Window] Rendering Claude Camus');
         return <PhilosophyAdvisor />;
+      case 'files.exe':
+        console.log('[Window] Rendering FileBrowser');
+        return <FileBrowser />;
       default:
         console.log('[Window] No app component for:', fileName, '- using default fallback');
         return null;

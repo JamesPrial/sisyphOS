@@ -1,0 +1,15 @@
+application "sisyphos-vfs" {
+
+  // API Key for authentication (secret)
+  env "VFS_API_KEY" {
+    secret = true
+  }
+
+  // Public HTTP service for VFS API endpoints
+  service "vfs-api" {
+    visibility = "public"
+  }
+
+  // Bucket for file content AND metadata storage (bucket-only architecture)
+  bucket "vfs-storage" {}
+}

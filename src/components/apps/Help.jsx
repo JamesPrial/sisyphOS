@@ -52,6 +52,11 @@ const Help = () => {
                 Claude Camus AI Assistant
               </a>
             </li>
+            <li style={{ marginBottom: 'var(--spacing-sm)' }}>
+              <a href="#file-browser" onClick={(e) => { e.preventDefault(); setCurrentSection('file-browser'); }}>
+                Cloud File Browser
+              </a>
+            </li>
           </ul>
         </>
       ),
@@ -194,6 +199,38 @@ const Help = () => {
           </p>
           <p style={{ marginTop: 'var(--spacing-md)', fontStyle: 'italic', opacity: 0.7 }}>
             "One must imagine the help-seeker happy." - Claude Camus
+          </p>
+        </>
+      ),
+    },
+    'file-browser': {
+      title: 'Cloud File Browser',
+      content: (
+        <>
+          <p>The File Browser (📁 files.exe) provides cloud-backed file storage that persists between sessions. Your files are stored in the cloud and accessible from any browser.</p>
+          <p style={{ marginTop: 'var(--spacing-md)' }}>
+            <strong>Features:</strong>
+          </p>
+          <ul>
+            <li>Upload files up to 5GB</li>
+            <li>Create folders and navigate hierarchies</li>
+            <li>Download files back to your computer</li>
+            <li>Delete files and folders (recursive)</li>
+            <li>Cloud persistence - files survive page refreshes</li>
+            <li>Shared filesystem - no user authentication (collaborative chaos!)</li>
+          </ul>
+          <p style={{ marginTop: 'var(--spacing-md)' }}>
+            <strong>How to Use:</strong>
+          </p>
+          <p>Double-click the 📁 files.exe icon on the desktop to open the File Browser. From there, you can upload files, create folders, and navigate your cloud storage.</p>
+          <p style={{ marginTop: 'var(--spacing-md)' }}>
+            <strong>Important Note:</strong> There is no user authentication. All users share the same filesystem. Your files may mysteriously appear or disappear based on the actions of others. This is either a bug or a feature, depending on your philosophical perspective.
+          </p>
+          <p style={{ marginTop: 'var(--spacing-md)' }}>
+            For technical details, the backend uses bucket-only storage architecture with metadata stored as JSON. No SQL database needed!
+          </p>
+          <p style={{ marginTop: 'var(--spacing-md)', fontStyle: 'italic', opacity: 0.7 }}>
+            "One must imagine the file manager happy." - Albert Camus (probably)
           </p>
         </>
       ),

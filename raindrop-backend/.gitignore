@@ -1,0 +1,13 @@
+# Environment variables
+.env
+.env.local
+
+# Build output
+dist/
+.raindrop/
+
+# Dependencies
+node_modules/
+
+# Logs
+*.log

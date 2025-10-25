@@ -19,6 +19,7 @@ const useOSStore = create((set) => ({
     { id: 'file-10', name: 'errors.exe', type: 'executable', x: 300, y: 150, originalX: 300, originalY: 150, icon: '⚠️' },
     { id: 'file-11', name: 'about.exe', type: 'executable', x: 300, y: 250, originalX: 300, originalY: 250, icon: 'ℹ️' },
     { id: 'file-12', name: 'Claude Camus.exe', type: 'executable', x: 180, y: 50, originalX: 180, originalY: 50, icon: '💭' },
+    { id: 'file-13', name: 'files.exe', type: 'executable', x: 300, y: 350, originalX: 300, originalY: 350, icon: '📁' },
   ],
 
   // Desktop organization tracking
@@ -39,6 +40,10 @@ const useOSStore = create((set) => ({
     message: null,
     context: null,
   },
+
+  // VFS Authentication state
+  vfsApiKey: typeof window !== 'undefined' ? localStorage.getItem('vfs_api_key') : null,
+  vfsIsAuthenticated: typeof window !== 'undefined' ? !!localStorage.getItem('vfs_api_key') : false,
 
   // Window actions
   addWindow: (window) =>
@@ -219,6 +224,39 @@ const useOSStore = create((set) => ({
         context: null,
       },
     })),
+
+  // VFS Authentication actions
+  loginVFS: (apiKey) => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('vfs_api_key', apiKey);
+    }
+    set(() => ({
+      vfsApiKey: apiKey,
+      vfsIsAuthenticated: true,
+    }));
+  },
+
+  logoutVFS: () => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('vfs_api_key');
+    }
+    set(() => ({
+      vfsApiKey: null,
+      vfsIsAuthenticated: false,
+    }));
+  },
+
+  getVFSKey: () => {
+    const state = useOSStore.getState();
+    if (state.vfsApiKey) {
+      return state.vfsApiKey;
+    }
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('vfs_api_key');
+    }
+    return null;
+  },
 }));
 
 export default useOSStore;
+export { useOSStore };
