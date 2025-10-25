@@ -37,7 +37,7 @@ Three distinct approaches to futile progress, each embodying a different philoso
 
 - **Installation Wizard (Eternal Recurrence)**: Inspired by Nietzsche's concept of eternal return - the installation reaches 99%, pauses briefly, then automatically resets to the beginning, repeating the same cycle infinitely. Each completion is identical to the last, an endless loop of the same experience.
 
-- **File Downloads (Classic Loop)**: Traditional infinite loop - downloads complete at 100% only to immediately reset and begin again, demonstrating the futility of completion when the task simply repeats endlessly.
+- **File Downloads (Escalating Failure)**: Random failure system where downloads can fail anywhere between 60-99% with escalating probability on each retry (30% base failure rate, +15% per retry, capping at 90%). Features mixed error messages (technical and philosophical) and a retry button. Embodies the cruel irony that persistence makes success less likely, not more - a reversal of traditional expectations where trying harder should increase chances of success.
 
 Each progress bar uses floating-point precision to display the increasingly small increments of progress, making the futility mathematically precise and philosophically meaningful.
 

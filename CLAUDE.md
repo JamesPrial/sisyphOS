@@ -63,9 +63,32 @@ Added automatic reset mechanism embodying Nietzsche's concept of eternal recurre
 **Philosophical Meaning:**
 The installation completes an infinite number of times, each cycle identical to the last. Like the eternal return, you experience the same futile journey again and again.
 
-**4. FileDownload.jsx - Unchanged:**
+**4. FileDownload.jsx - Escalating Failure (Random Failure with Retry):**
 
-Retains existing infinite loop behavior (resets at 100%) for variety in futility mechanisms.
+Completely redesigned to implement a random failure system with escalating futility on each retry attempt.
+
+**Mathematical Implementation:**
+- Random failure point: 60-99% (generated fresh each attempt)
+- Escalating failure probability formula: `Math.min(30 + (retryCount × 15), 90)`
+- First attempt: 30% chance of failure
+- Each retry: +15% failure probability
+- Maximum failure rate: 90%
+
+**Features:**
+- Downloads can randomly fail anywhere between 60-99%
+- Mixed error messages: 50/50 split between technical and philosophical errors
+- Retry button allows user to attempt download again
+- Failure probability displayed after first retry
+- Attempt counter shows total attempts and failed count
+- Progress bar freezes at failure point
+- Conditional UI states (normal vs failed)
+
+**Error Message Types:**
+- **Technical**: "Network timeout", "Error 403", "Checksum verification failed", etc.
+- **Philosophical**: "The file you seek cannot be obtained, only pursued", "Download failed: Meaning.dll not found", etc.
+
+**Philosophical Meaning:**
+Unlike the other progress bars that offer predictable futility, FileDownload embodies escalating despair. Each retry makes success LESS likely, not more. The more you try, the more futile it becomes. Success is possible but increasingly improbable - a cruel reversal of the usual expectation that persistence leads to success.
 
 ### Component File Locations
 
@@ -73,14 +96,16 @@ Retains existing infinite loop behavior (resets at 100%) for variety in futility
 - `/src/components/ProgressBar.jsx` - Enhanced with decimal place support
 - `/src/components/apps/SystemUpdate.jsx` - Asymptotic behavior (Zeno's Paradox)
 - `/src/components/apps/InstallWizard.jsx` - Infinite loop (Eternal Recurrence)
+- `/src/components/apps/FileDownload.jsx` - Random failure with escalating probability
+- `/src/data/philosophy.js` - Added download error message arrays
 
 ### Philosophical Distinctions
 
 The project now features three distinct approaches to futile progress:
 
-1. **Asymptotic Futility (SystemUpdate):** Never completing, always approaching
-2. **Cyclical Futility (InstallWizard):** Completing infinitely, eternally recurring
-3. **Reset Futility (FileDownload):** Completing and immediately restarting
+1. **Asymptotic Futility (SystemUpdate):** Never completing, always approaching but never arriving
+2. **Cyclical Futility (InstallWizard):** Completing infinitely, eternally recurring in identical cycles
+3. **Escalating Futility (FileDownload):** Random failure with increasing probability - the more you try, the less likely you are to succeed
 
 Each embodies a different philosophical perspective on meaningless tasks, enriching the absurdist experience.
 
@@ -209,7 +234,7 @@ Files without custom components (README.txt, boulder.exe) show fallback UI with 
 2. **Sisyphean Progress Bars**: Three distinct futility mechanisms embodying different philosophical concepts:
    - **SystemUpdate**: Asymptotic approach (Zeno's Paradox) - approaches 100% infinitely but never arrives, displays up to 4 decimal places (99.9876%)
    - **InstallWizard**: Eternal recurrence - auto-resets at 99% and repeats the cycle infinitely
-   - **FileDownload**: Infinite loop - resets at 100% and starts over immediately
+   - **FileDownload**: Escalating failure - random failures (60-99%) with increasing probability on retry (30% base, +15% per retry, caps at 90%)
 3. **Futile Task Manager**: Processes respawn with higher CPU/memory, multiply after 3 kills (useProcessManager.js)
 4. **Philosophy Dialogs**: Inescapable dialogs with Camus quotes, ESC key disabled
 5. **Happy Mode**: Toggle that changes aesthetics (bright gradients, sparkles) but keeps futility intact

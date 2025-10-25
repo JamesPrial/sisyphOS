@@ -143,17 +143,42 @@ This isn't a buggy OS—it's intentionally absurd. Every "frustration" is carefu
 
 ---
 
-### 7. Other Features (Quick mentions - 30 seconds)
+### 7. File Download - Escalating Failure (1.5 minutes)
+**Action:**
+- Double-click "download.exe"
+- Watch the download progress
+- Observe when it fails (random between 60-99%)
+- Point out the error message (technical or philosophical)
+- Click "Retry Download"
+- Show the failure probability increasing
+
+**Talking Points:**
+- This demonstrates a cruel twist on persistence
+- Unlike normal software where retrying increases your chances, here it DECREASES them
+- First attempt: 30% chance of failure
+- Each retry adds 15% to the failure probability
+- After a few retries, you're almost guaranteed to fail
+- Error messages mix technical realism with philosophical absurdity
+- "The file you seek cannot be obtained, only pursued"
+
+**Philosophical Moment:**
+"Most systems reward persistence. Try again and you'll eventually succeed. But this one punishes persistence. The more you try, the less likely you are to succeed. It's a reversal of our expectations - a cruel reminder that effort doesn't always lead to success."
+
+**Key Line:**
+"Each retry makes the situation worse, yet we keep clicking. Because what else is there to do?"
+
+---
+
+### 8. Other Features (Quick mentions - 30 seconds)
 **Briefly show or mention:**
 - **Desktop Organization** - organize.exe for temporary order
 - **Installation Wizard** - install.exe demonstrates eternal recurrence (resets at 99% infinitely)
-- **File Downloads** - download.exe shows classic infinite loop behavior
 - **Error Simulator** - errors.exe for existential error messages
 - **Uptime Counter** - "Time you'll never get back"
 - **About Dialog** - about.exe for project info
 
 **Note on Progress Bars:**
-"We have three different progress bar behaviors - System Update never completes (asymptotic), Installation Wizard resets infinitely (eternal recurrence), and Downloads loop endlessly. Three different philosophies of futility."
+"We have three different progress bar behaviors - System Update never completes (asymptotic), Installation Wizard resets infinitely (eternal recurrence), and File Download randomly fails with escalating probability. Three different philosophies of futility."
 
 ---
 

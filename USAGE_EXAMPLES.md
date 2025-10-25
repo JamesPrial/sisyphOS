@@ -628,6 +628,175 @@ function SystemUpdateExample() {
 }
 ```
 
+### Random Failure with Escalating Retry (FileDownload Pattern)
+
+```jsx
+import ProgressBar from './components/ProgressBar';
+import { useState, useEffect, useRef } from 'react';
+import { getRandomDownloadError } from './data/philosophy';
+
+function RandomFailureExample() {
+  const [progress, setProgress] = useState(0);
+  const [isFailed, setIsFailed] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [retryCount, setRetryCount] = useState(0);
+  const [resetCount, setResetCount] = useState(0);
+  const [failurePoint, setFailurePoint] = useState(null);
+  const intervalRef = useRef(null);
+
+  // Initialize random failure point on mount
+  useEffect(() => {
+    setFailurePoint(Math.floor(Math.random() * 40) + 60); // 60-99%
+  }, []);
+
+  useEffect(() => {
+    // Don't create intervals when in failed state
+    if (isFailed) {
+      return;
+    }
+
+    intervalRef.current = setInterval(() => {
+      setProgress((prev) => {
+        const newProgress = prev + 1;
+
+        // Check for failure at failure point
+        if (!isFailed && newProgress >= failurePoint && prev < failurePoint) {
+          const failureChance = Math.min(30 + (retryCount * 15), 90);
+          if (Math.random() * 100 < failureChance) {
+            setIsFailed(true);
+            setErrorMessage(getRandomDownloadError());
+            clearInterval(intervalRef.current);
+            return failurePoint;
+          }
+        }
+
+        // Success case - reset at 99%
+        if (newProgress >= 99 && !isFailed) {
+          setTimeout(() => {
+            setResetCount((count) => count + 1);
+            setProgress(0);
+            setFailurePoint(Math.floor(Math.random() * 40) + 60);
+          }, 500);
+          return 99;
+        }
+
+        return newProgress;
+      });
+    }, 100);
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [isFailed, retryCount, failurePoint]);
+
+  const handleRetry = () => {
+    setIsFailed(false);
+    setErrorMessage('');
+    setProgress(0);
+    setRetryCount((prev) => prev + 1);
+    setFailurePoint(Math.floor(Math.random() * 40) + 60);
+    // Note: intervals will be created by useEffect when isFailed changes to false
+  };
+
+  return (
+    <div>
+      <h3>File Download</h3>
+      <ProgressBar progress={progress} decimalPlaces={0} />
+
+      {/* Error UI */}
+      {isFailed && (
+        <div style={{
+          marginTop: '1rem',
+          padding: '1rem',
+          backgroundColor: '#fee',
+          border: '2px solid #f44',
+          borderRadius: '8px'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <span style={{ fontSize: '24px' }}>⚠️</span>
+            <div>
+              <div style={{ fontWeight: 'bold', color: '#c00' }}>
+                Download Failed
+              </div>
+              <div style={{ fontSize: '0.9em', marginTop: '4px' }}>
+                {errorMessage}
+              </div>
+            </div>
+          </div>
+          <button
+            onClick={handleRetry}
+            style={{
+              marginTop: '0.75rem',
+              padding: '0.5rem 1rem',
+              backgroundColor: '#0066cc',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              width: '100%'
+            }}
+          >
+            Retry Download
+          </button>
+          {retryCount > 0 && (
+            <div style={{
+              marginTop: '0.5rem',
+              fontSize: '0.8em',
+              color: '#666',
+              textAlign: 'center',
+              fontStyle: 'italic'
+            }}>
+              Failure probability: {Math.min(30 + (retryCount * 15), 90)}%
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Stats */}
+      <div style={{ marginTop: '1rem', fontSize: '0.9em', color: '#666' }}>
+        <div>Total attempts: {resetCount + retryCount}</div>
+        {retryCount > 0 && <div>Failed attempts: {retryCount}</div>}
+        <div style={{ marginTop: '0.5rem', fontStyle: 'italic' }}>
+          {isFailed
+            ? "Perhaps the file was never meant to be downloaded."
+            : "Download in progress..."
+          }
+        </div>
+      </div>
+    </div>
+  );
+}
+// Features:
+// - Random failure point (60-99%)
+// - Escalating failure probability (30% + 15% per retry, max 90%)
+// - Retry button that restarts download
+// - Error messages from philosophy.js
+// - Displays current failure probability
+// - Success is still possible but becomes increasingly unlikely
+```
+
+### Key Patterns Summary
+
+**Three Distinct Futility Philosophies:**
+
+1. **Asymptotic (Zeno's Paradox)** - Never completes, always approaching
+   - Variable decay rates slow progress exponentially
+   - Displays 4 decimal places to show infinitesimal progress
+   - Formula: `progress + (100 - progress) * decayRate`
+
+2. **Eternal Recurrence** - Completes and resets infinitely
+   - Auto-resets at 99% after brief delay
+   - Cycle counter tracks iterations
+   - Same experience repeated forever
+
+3. **Escalating Failure** - Random failures with increasing probability
+   - Failure point randomized each attempt (60-99%)
+   - Probability formula: `Math.min(30 + (retryCount * 15), 90)`
+   - Success possible but increasingly unlikely
+   - Mixed technical/philosophical error messages
+
 ## Summary
 
 The Philosophy & Dialogs system provides:
@@ -642,8 +811,10 @@ The Progress Bar system provides:
 - Integer and floating-point percentage display
 - Support for asymptotic behaviors (Zeno's Paradox)
 - Support for infinite loops and eternal recurrence
+- Support for random failure with escalating retry probability
 - Configurable decimal places (0-4)
 - Smooth, precise progress visualization
+- Three distinct philosophical approaches to futility
 
 All components work together to create an absurdist experience where users must accept reality as presented, embrace the meaningless, and find humor in the inevitable.
 
