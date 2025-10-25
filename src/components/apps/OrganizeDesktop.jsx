@@ -1,54 +1,53 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import useOSStore from '../../store/osStore';
+import { useDesktopChaos } from '../../hooks/useDesktopChaos';
+import { iconHerdingMessages, getIconHerdingGiveUpMessage } from '../../data/philosophy';
 
 const OrganizeDesktop = () => {
-  const { organizeDesktop, resetDesktopPositions, organizationAttempts } = useOSStore();
-  const [isOrganizing, setIsOrganizing] = useState(false);
-  const [entropyProgress, setEntropyProgress] = useState(0);
-  const [showSuccess, setShowSuccess] = useState(false);
-  const entropyTimeoutRef = useRef(null);
-  const entropyIntervalRef = useRef(null);
+  const {
+    desktopFiles,
+    updateDesktopFilePosition,
+    startDesktopChaos,
+    stopDesktopChaos,
+  } = useOSStore();
 
+  const chaos = useDesktopChaos(desktopFiles, updateDesktopFilePosition);
+  const [gameState, setGameState] = useState('idle'); // 'idle', 'active', 'ended'
+
+  // Expose drag handlers globally so BoulderIcon can access them
   useEffect(() => {
-    return () => {
-      if (entropyTimeoutRef.current) clearTimeout(entropyTimeoutRef.current);
-      if (entropyIntervalRef.current) clearInterval(entropyIntervalRef.current);
+    window.__chaosHandlers = {
+      onDragStart: chaos.onIconDragStart,
+      onDragStop: chaos.onIconDragStop,
+      isActive: chaos.isActive,
     };
-  }, []);
 
-  const handleOrganize = () => {
-    // Organize the desktop
-    organizeDesktop();
-    setIsOrganizing(true);
-    setShowSuccess(true);
-    setEntropyProgress(0);
+    return () => {
+      delete window.__chaosHandlers;
+    };
+  }, [chaos.onIconDragStart, chaos.onIconDragStop, chaos.isActive]);
 
-    // Hide success message after 2 seconds
-    setTimeout(() => {
-      setShowSuccess(false);
-    }, 2000);
+  const handleStart = () => {
+    setGameState('active');
+    startDesktopChaos();
+    chaos.start();
+  };
 
-    // Start entropy progress bar
-    const progressDuration = 5000; // 5 seconds
-    const intervalTime = 50; // Update every 50ms
-    const steps = progressDuration / intervalTime;
-    let currentStep = 0;
+  const handleGiveUp = () => {
+    setGameState('ended');
+    stopDesktopChaos();
+    chaos.stop();
+  };
 
-    entropyIntervalRef.current = setInterval(() => {
-      currentStep++;
-      setEntropyProgress((currentStep / steps) * 100);
+  const handleTryAgain = () => {
+    setGameState('idle');
+  };
 
-      if (currentStep >= steps) {
-        clearInterval(entropyIntervalRef.current);
-      }
-    }, intervalTime);
-
-    // After 5 seconds, trigger drift-back
-    entropyTimeoutRef.current = setTimeout(() => {
-      resetDesktopPositions();
-      setIsOrganizing(false);
-      setEntropyProgress(0);
-    }, progressDuration);
+  // Format time as MM:SS
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
   return (
@@ -60,213 +59,502 @@ const OrganizeDesktop = () => {
         justifyContent: 'center',
         height: '100%',
         padding: 'var(--spacing-xl)',
-        gap: 'var(--spacing-xl)',
+        gap: 'var(--spacing-lg)',
         backgroundColor: 'var(--color-bg-secondary)',
       }}
     >
-      {/* Header */}
-      <div
-        style={{
-          textAlign: 'center',
-          maxWidth: '500px',
-        }}
-      >
-        <div
-          style={{
-            fontSize: '3rem',
-            marginBottom: 'var(--spacing-md)',
-          }}
-        >
-          🗂️
-        </div>
-        <h2
-          style={{
-            fontSize: '24px',
-            fontWeight: '600',
-            marginBottom: 'var(--spacing-md)',
-            color: 'var(--color-text-primary)',
-          }}
-        >
-          Desktop Organization Tool
-        </h2>
-        <p
-          style={{
-            fontSize: '14px',
-            color: 'var(--color-text-secondary)',
-            lineHeight: '1.6',
-            fontStyle: 'italic',
-          }}
-        >
-          "The absurd is the essential concept and the first truth." - Camus
-        </p>
-      </div>
-
-      {/* Organize Button */}
-      <button
-        onClick={handleOrganize}
-        disabled={isOrganizing}
-        style={{
-          padding: 'var(--spacing-lg) var(--spacing-xl)',
-          fontSize: '18px',
-          fontWeight: '600',
-          backgroundColor: isOrganizing
-            ? 'var(--color-border-light)'
-            : 'var(--color-accent-primary)',
-          color: 'white',
-          border: 'none',
-          borderRadius: 'var(--radius-md)',
-          cursor: isOrganizing ? 'not-allowed' : 'pointer',
-          transition: 'all var(--transition-normal)',
-          boxShadow: isOrganizing ? 'none' : 'var(--shadow-lg)',
-          transform: isOrganizing ? 'scale(0.95)' : 'scale(1)',
-        }}
-        onMouseEnter={(e) => {
-          if (!isOrganizing) {
-            e.target.style.transform = 'scale(1.05)';
-            e.target.style.boxShadow = 'var(--shadow-xl)';
-          }
-        }}
-        onMouseLeave={(e) => {
-          if (!isOrganizing) {
-            e.target.style.transform = 'scale(1)';
-            e.target.style.boxShadow = 'var(--shadow-lg)';
-          }
-        }}
-      >
-        {isOrganizing ? 'Organizing...' : 'Organize Desktop'}
-      </button>
-
-      {/* Success Message */}
-      {showSuccess && (
-        <div
-          style={{
-            padding: 'var(--spacing-md)',
-            backgroundColor: 'rgba(92, 184, 92, 0.1)',
-            border: '1px solid rgba(92, 184, 92, 0.3)',
-            borderRadius: 'var(--radius-md)',
-            color: 'var(--color-text-primary)',
-            fontSize: '14px',
-            fontWeight: '500',
-            animation: 'fadeIn 0.3s ease-in-out',
-          }}
-        >
-          Desktop organized!
-        </div>
-      )}
-
-      {/* Entropy Progress */}
-      {isOrganizing && (
-        <div
-          style={{
-            width: '100%',
-            maxWidth: '400px',
-          }}
-        >
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: 'var(--spacing-sm)',
-            }}
-          >
-            <span
+      {/* IDLE STATE - Start Screen */}
+      {gameState === 'idle' && (
+        <>
+          {/* Header */}
+          <div style={{ textAlign: 'center', maxWidth: '500px' }}>
+            <div style={{ fontSize: '3rem', marginBottom: 'var(--spacing-md)' }}>
+              🎯
+            </div>
+            <h2
+              style={{
+                fontSize: '24px',
+                fontWeight: '600',
+                marginBottom: 'var(--spacing-md)',
+                color: 'var(--color-text-primary)',
+              }}
+            >
+              {iconHerdingMessages.start.title}
+            </h2>
+            <p
+              style={{
+                fontSize: '14px',
+                color: 'var(--color-text-secondary)',
+                lineHeight: '1.6',
+                marginBottom: 'var(--spacing-lg)',
+              }}
+            >
+              {iconHerdingMessages.start.description}
+            </p>
+            <p
               style={{
                 fontSize: '12px',
                 color: 'var(--color-text-secondary)',
-                fontWeight: '500',
+                lineHeight: '1.6',
+                fontStyle: 'italic',
               }}
             >
-              Entropy increasing...
-            </span>
-            <span
-              style={{
-                fontSize: '12px',
-                color: 'var(--color-accent-secondary)',
-                fontWeight: '600',
-              }}
-            >
-              {Math.round(entropyProgress)}%
-            </span>
+              {iconHerdingMessages.start.flavor}
+            </p>
           </div>
+
+          {/* Start Button */}
+          <button
+            onClick={handleStart}
+            style={{
+              padding: 'var(--spacing-lg) var(--spacing-xl)',
+              fontSize: '18px',
+              fontWeight: '600',
+              backgroundColor: 'var(--color-accent-primary)',
+              color: 'white',
+              border: 'none',
+              borderRadius: 'var(--radius-md)',
+              cursor: 'pointer',
+              transition: 'all var(--transition-normal)',
+              boxShadow: 'var(--shadow-lg)',
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.transform = 'scale(1.05)';
+              e.target.style.boxShadow = 'var(--shadow-xl)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.transform = 'scale(1)';
+              e.target.style.boxShadow = 'var(--shadow-lg)';
+            }}
+          >
+            Start Herding
+          </button>
+
+          {/* Instructions */}
           <div
             style={{
+              maxWidth: '400px',
+              textAlign: 'center',
+              padding: 'var(--spacing-md)',
+              backgroundColor: 'rgba(92, 107, 192, 0.05)',
+              borderRadius: 'var(--radius-md)',
+              border: '1px dashed var(--color-border-light)',
+            }}
+          >
+            <p
+              style={{
+                fontSize: '11px',
+                color: 'var(--color-text-secondary)',
+                lineHeight: '1.5',
+                margin: 0,
+              }}
+            >
+              <strong>How to play:</strong> Drag each icon back to its starting position.
+              Icons will pause briefly (2-3s) when returned, then resume their chaotic journey.
+              They will speed up over time. There is no winning, only acceptance.
+            </p>
+          </div>
+        </>
+      )}
+
+      {/* ACTIVE STATE - Playing */}
+      {gameState === 'active' && (
+        <>
+          {/* Header */}
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: '3rem', marginBottom: 'var(--spacing-sm)' }}>
+              🌪️
+            </div>
+            <h2
+              style={{
+                fontSize: '20px',
+                fontWeight: '600',
+                color: 'var(--color-text-primary)',
+              }}
+            >
+              Chaos in Progress
+            </h2>
+          </div>
+
+          {/* Live Stats Grid */}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(2, 1fr)',
+              gap: 'var(--spacing-md)',
               width: '100%',
-              height: '8px',
-              backgroundColor: 'var(--color-border-light)',
+              maxWidth: '400px',
+            }}
+          >
+            {/* Icons Returned */}
+            <div
+              style={{
+                padding: 'var(--spacing-md)',
+                backgroundColor: 'var(--color-bg-primary)',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--color-border-light)',
+                textAlign: 'center',
+              }}
+            >
+              <div
+                style={{
+                  fontSize: '28px',
+                  fontWeight: '700',
+                  color: 'var(--color-accent-primary)',
+                }}
+              >
+                {chaos.stats.iconsReturned}
+              </div>
+              <div
+                style={{
+                  fontSize: '10px',
+                  color: 'var(--color-text-secondary)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px',
+                }}
+              >
+                Returned
+              </div>
+            </div>
+
+            {/* Time Elapsed */}
+            <div
+              style={{
+                padding: 'var(--spacing-md)',
+                backgroundColor: 'var(--color-bg-primary)',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--color-border-light)',
+                textAlign: 'center',
+              }}
+            >
+              <div
+                style={{
+                  fontSize: '28px',
+                  fontWeight: '700',
+                  color: 'var(--color-accent-secondary)',
+                }}
+              >
+                {formatTime(chaos.stats.timeElapsed)}
+              </div>
+              <div
+                style={{
+                  fontSize: '10px',
+                  color: 'var(--color-text-secondary)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px',
+                }}
+              >
+                Time
+              </div>
+            </div>
+
+            {/* Max Returned */}
+            <div
+              style={{
+                padding: 'var(--spacing-md)',
+                backgroundColor: 'var(--color-bg-primary)',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--color-border-light)',
+                textAlign: 'center',
+              }}
+            >
+              <div
+                style={{
+                  fontSize: '28px',
+                  fontWeight: '700',
+                  color: 'rgba(92, 184, 92, 0.8)',
+                }}
+              >
+                {chaos.stats.maxReturned}
+              </div>
+              <div
+                style={{
+                  fontSize: '10px',
+                  color: 'var(--color-text-secondary)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px',
+                }}
+              >
+                Peak Success
+              </div>
+            </div>
+
+            {/* Chaos Level */}
+            <div
+              style={{
+                padding: 'var(--spacing-md)',
+                backgroundColor: 'var(--color-bg-primary)',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--color-border-light)',
+                textAlign: 'center',
+              }}
+            >
+              <div
+                style={{
+                  fontSize: '28px',
+                  fontWeight: '700',
+                  color: 'rgba(217, 83, 79, 0.8)',
+                }}
+              >
+                {chaos.stats.peakSpeed.toFixed(1)}x
+              </div>
+              <div
+                style={{
+                  fontSize: '10px',
+                  color: 'var(--color-text-secondary)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px',
+                }}
+              >
+                Speed
+              </div>
+            </div>
+          </div>
+
+          {/* Attempts Counter */}
+          <div
+            style={{
+              padding: 'var(--spacing-sm) var(--spacing-md)',
+              backgroundColor: 'rgba(92, 107, 192, 0.05)',
               borderRadius: 'var(--radius-sm)',
-              overflow: 'hidden',
+              fontSize: '12px',
+              color: 'var(--color-text-secondary)',
+            }}
+          >
+            Drag attempts: <strong>{chaos.stats.totalAttempts}</strong>
+          </div>
+
+          {/* Give Up Button */}
+          <button
+            onClick={handleGiveUp}
+            style={{
+              padding: 'var(--spacing-md) var(--spacing-lg)',
+              fontSize: '16px',
+              fontWeight: '600',
+              backgroundColor: 'rgba(217, 83, 79, 0.8)',
+              color: 'white',
+              border: 'none',
+              borderRadius: 'var(--radius-md)',
+              cursor: 'pointer',
+              transition: 'all var(--transition-normal)',
+              boxShadow: 'var(--shadow-md)',
+              marginTop: 'var(--spacing-md)',
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.backgroundColor = 'rgba(217, 83, 79, 1)';
+              e.target.style.boxShadow = 'var(--shadow-lg)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.backgroundColor = 'rgba(217, 83, 79, 0.8)';
+              e.target.style.boxShadow = 'var(--shadow-md)';
+            }}
+          >
+            Give Up
+          </button>
+        </>
+      )}
+
+      {/* ENDED STATE - Game Over */}
+      {gameState === 'ended' && (
+        <>
+          {/* Header */}
+          <div style={{ textAlign: 'center', maxWidth: '500px' }}>
+            <div style={{ fontSize: '3rem', marginBottom: 'var(--spacing-md)' }}>
+              🏳️
+            </div>
+            <h2
+              style={{
+                fontSize: '24px',
+                fontWeight: '600',
+                marginBottom: 'var(--spacing-md)',
+                color: 'var(--color-text-primary)',
+              }}
+            >
+              Acceptance
+            </h2>
+          </div>
+
+          {/* Philosophical Message */}
+          <div
+            style={{
+              maxWidth: '450px',
+              textAlign: 'center',
+              padding: 'var(--spacing-lg)',
+              backgroundColor: 'rgba(92, 107, 192, 0.1)',
+              borderRadius: 'var(--radius-md)',
+              border: '1px solid rgba(92, 107, 192, 0.3)',
+              marginBottom: 'var(--spacing-md)',
+            }}
+          >
+            <p
+              style={{
+                fontSize: '14px',
+                color: 'var(--color-text-primary)',
+                lineHeight: '1.6',
+                margin: 0,
+                fontStyle: 'italic',
+              }}
+            >
+              "{getIconHerdingGiveUpMessage(chaos.stats)}"
+            </p>
+          </div>
+
+          {/* Final Stats */}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(2, 1fr)',
+              gap: 'var(--spacing-md)',
+              width: '100%',
+              maxWidth: '400px',
             }}
           >
             <div
               style={{
-                width: `${entropyProgress}%`,
-                height: '100%',
-                backgroundColor: 'var(--color-accent-secondary)',
-                transition: 'width 0.1s linear',
+                padding: 'var(--spacing-md)',
+                backgroundColor: 'var(--color-bg-primary)',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--color-border-light)',
+                textAlign: 'center',
               }}
-            />
+            >
+              <div
+                style={{
+                  fontSize: '24px',
+                  fontWeight: '700',
+                  color: 'var(--color-accent-primary)',
+                }}
+              >
+                {chaos.stats.iconsReturned}
+              </div>
+              <div
+                style={{
+                  fontSize: '10px',
+                  color: 'var(--color-text-secondary)',
+                  textTransform: 'uppercase',
+                }}
+              >
+                Final Returned
+              </div>
+            </div>
+
+            <div
+              style={{
+                padding: 'var(--spacing-md)',
+                backgroundColor: 'var(--color-bg-primary)',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--color-border-light)',
+                textAlign: 'center',
+              }}
+            >
+              <div
+                style={{
+                  fontSize: '24px',
+                  fontWeight: '700',
+                  color: 'var(--color-accent-secondary)',
+                }}
+              >
+                {formatTime(chaos.stats.timeElapsed)}
+              </div>
+              <div
+                style={{
+                  fontSize: '10px',
+                  color: 'var(--color-text-secondary)',
+                  textTransform: 'uppercase',
+                }}
+              >
+                Duration
+              </div>
+            </div>
+
+            <div
+              style={{
+                padding: 'var(--spacing-md)',
+                backgroundColor: 'var(--color-bg-primary)',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--color-border-light)',
+                textAlign: 'center',
+              }}
+            >
+              <div
+                style={{
+                  fontSize: '24px',
+                  fontWeight: '700',
+                  color: 'rgba(92, 184, 92, 0.8)',
+                }}
+              >
+                {chaos.stats.maxReturned}
+              </div>
+              <div
+                style={{
+                  fontSize: '10px',
+                  color: 'var(--color-text-secondary)',
+                  textTransform: 'uppercase',
+                }}
+              >
+                Peak Success
+              </div>
+            </div>
+
+            <div
+              style={{
+                padding: 'var(--spacing-md)',
+                backgroundColor: 'var(--color-bg-primary)',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--color-border-light)',
+                textAlign: 'center',
+              }}
+            >
+              <div
+                style={{
+                  fontSize: '24px',
+                  fontWeight: '700',
+                  color: 'rgba(217, 83, 79, 0.8)',
+                }}
+              >
+                {chaos.stats.totalAttempts}
+              </div>
+              <div
+                style={{
+                  fontSize: '10px',
+                  color: 'var(--color-text-secondary)',
+                  textTransform: 'uppercase',
+                }}
+              >
+                Total Attempts
+              </div>
+            </div>
           </div>
-        </div>
+
+          {/* Try Again Button */}
+          <button
+            onClick={handleTryAgain}
+            style={{
+              padding: 'var(--spacing-md) var(--spacing-lg)',
+              fontSize: '16px',
+              fontWeight: '600',
+              backgroundColor: 'var(--color-accent-primary)',
+              color: 'white',
+              border: 'none',
+              borderRadius: 'var(--radius-md)',
+              cursor: 'pointer',
+              transition: 'all var(--transition-normal)',
+              boxShadow: 'var(--shadow-md)',
+              marginTop: 'var(--spacing-md)',
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.transform = 'scale(1.05)';
+              e.target.style.boxShadow = 'var(--shadow-lg)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.transform = 'scale(1)';
+              e.target.style.boxShadow = 'var(--shadow-md)';
+            }}
+          >
+            Try Again (It Won't Help)
+          </button>
+        </>
       )}
-
-      {/* Statistics */}
-      <div
-        style={{
-          marginTop: 'auto',
-          padding: 'var(--spacing-md)',
-          backgroundColor: 'var(--color-bg-primary)',
-          borderRadius: 'var(--radius-md)',
-          border: '1px solid var(--color-border-light)',
-          minWidth: '250px',
-          textAlign: 'center',
-        }}
-      >
-        <div
-          style={{
-            fontSize: '32px',
-            fontWeight: '700',
-            color: 'var(--color-accent-primary)',
-            marginBottom: 'var(--spacing-xs)',
-          }}
-        >
-          {organizationAttempts}
-        </div>
-        <div
-          style={{
-            fontSize: '12px',
-            color: 'var(--color-text-secondary)',
-            textTransform: 'uppercase',
-            letterSpacing: '1px',
-          }}
-        >
-          Organization Attempts
-        </div>
-      </div>
-
-      {/* Philosophical Note */}
-      <div
-        style={{
-          maxWidth: '400px',
-          textAlign: 'center',
-          padding: 'var(--spacing-md)',
-          backgroundColor: 'rgba(92, 107, 192, 0.05)',
-          borderRadius: 'var(--radius-md)',
-          border: '1px dashed var(--color-border-light)',
-        }}
-      >
-        <p
-          style={{
-            fontSize: '11px',
-            color: 'var(--color-text-secondary)',
-            lineHeight: '1.5',
-            margin: 0,
-          }}
-        >
-          The desktop seeks equilibrium. Order is temporary. Chaos is inevitable.
-          Yet we organize again, finding meaning in the struggle itself.
-        </p>
-      </div>
     </div>
   );
 };

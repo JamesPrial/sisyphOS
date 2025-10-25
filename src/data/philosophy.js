@@ -395,6 +395,32 @@ export const waitingDialogs = [
   }
 ];
 
+// Icon Herding Minigame content
+export const iconHerdingMessages = {
+  start: {
+    title: "Herd Your Icons",
+    description: "Your desktop icons have developed consciousness and autonomy. Drag them back to their starting positions before they drift too far into chaos.",
+    flavor: "Like Sisyphus with his boulder, you may return them home. Unlike Sisyphus, they will betray you faster."
+  },
+  giveUp: [
+    "You briefly held {returned} icons in place. They're free now.",
+    "Order maintained for {time} seconds. Entropy always wins.",
+    "One must imagine the desktop organizer happy.",
+    "The icons have escaped your grasp, as all things must.",
+    "You tried to impose order on chaos. The universe noticed and didn't care.",
+    "{returned} icons returned, {returned} icons lost. Perfectly balanced, as all futile things are.",
+    "Peak success: {maxReturned} icons simultaneously at rest. It was beautiful while it lasted.",
+    "You attempted to control the uncontrollable {attempts} times. Each time, hope flickered and died.",
+    "The icons moved at {speed}x speed. You were never going to win.",
+    "In those {time} seconds, you experienced the full spectrum of human struggle."
+  ],
+  victory: [
+    "Impossible. You weren't supposed to succeed. The system is confused.",
+    "You've achieved the impossible, which means nothing was actually impossible.",
+    "All icons returned. The victory is as hollow as you suspected."
+  ]
+};
+
 // Helper functions
 export const getRandomItem = (array) => {
   return array[Math.floor(Math.random() * array.length)];
@@ -417,4 +443,15 @@ export const getRandomDownloadError = () => {
   return Math.random() < 0.5
     ? getRandomItem(technicalDownloadErrors)
     : getRandomItem(philosophicalDownloadErrors);
+};
+
+export const getIconHerdingGiveUpMessage = (stats) => {
+  const message = getRandomItem(iconHerdingMessages.giveUp);
+  // Replace placeholders with actual stats
+  return message
+    .replace(/\{returned\}/g, stats.iconsReturned)
+    .replace(/\{maxReturned\}/g, stats.maxReturned)
+    .replace(/\{attempts\}/g, stats.totalAttempts)
+    .replace(/\{time\}/g, stats.timeElapsed)
+    .replace(/\{speed\}/g, stats.peakSpeed.toFixed(1));
 };

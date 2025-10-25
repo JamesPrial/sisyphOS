@@ -23,6 +23,9 @@ const useOSStore = create((set) => ({
   // Desktop organization tracking
   organizationAttempts: 0,
 
+  // Chaos mode (minigame state)
+  isChaosMode: false,
+
   // Happy mode toggle (for absurdist behavior)
   isHappyMode: false,
 
@@ -166,6 +169,17 @@ const useOSStore = create((set) => ({
   incrementOrganizationAttempts: () =>
     set((state) => ({
       organizationAttempts: state.organizationAttempts + 1,
+    })),
+
+  // Chaos mode actions
+  startDesktopChaos: () =>
+    set(() => ({
+      isChaosMode: true,
+    })),
+
+  stopDesktopChaos: () =>
+    set(() => ({
+      isChaosMode: false,
     })),
 
   // Dialog actions

@@ -18,6 +18,24 @@ const BoulderIcon = ({ file, selected, onSelect, onDoubleClick }) => {
     updateDesktopFilePosition(file.id, data.x, data.y);
   };
 
+  // Enhanced drag start handler that also notifies chaos system if active
+  const handleDragStart = () => {
+    onDragStart();
+    // Notify chaos system if minigame is active
+    if (window.__chaosHandlers?.isActive) {
+      window.__chaosHandlers.onDragStart(file.id);
+    }
+  };
+
+  // Enhanced drag stop handler that also notifies chaos system if active
+  const handleDragStop = () => {
+    onDragStop();
+    // Notify chaos system if minigame is active
+    if (window.__chaosHandlers?.isActive) {
+      window.__chaosHandlers.onDragStop();
+    }
+  };
+
   return (
     <Icon
       icon={file.icon}
@@ -25,9 +43,9 @@ const BoulderIcon = ({ file, selected, onSelect, onDoubleClick }) => {
       selected={selected}
       onSelect={onSelect}
       onDoubleClick={onDoubleClick}
-      onDragStart={onDragStart}
+      onDragStart={handleDragStart}
       onDrag={handleDrag}
-      onDragStop={onDragStop}
+      onDragStop={handleDragStop}
       position={{ x: file.x, y: file.y }}
       isDrifting={isDrifting}
       rotation={rotation}

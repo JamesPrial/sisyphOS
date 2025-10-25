@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import useOSStore from '../store/osStore';
 
 /**
  * useBoulderPhysics - Custom hook for Sisyphean drift-back mechanics
@@ -8,6 +9,8 @@ import { useEffect, useRef, useState } from 'react';
  *
  * Files closer to their origin drift back faster, creating a sense
  * of inexorable gravity pulling them back to their fate.
+ *
+ * NOTE: This hook is disabled during chaos mode (minigame).
  */
 const useBoulderPhysics = (
   fileId,
@@ -15,6 +18,8 @@ const useBoulderPhysics = (
   originalPosition,
   updatePosition
 ) => {
+  // Check if chaos mode is active - disable drift-back during minigame
+  const isChaosMode = useOSStore((state) => state.isChaosMode);
   const [isDrifting, setIsDrifting] = useState(false);
   const [rotation, setRotation] = useState(0);
   const driftTimeoutRef = useRef(null);
@@ -109,6 +114,9 @@ const useBoulderPhysics = (
 
   // Handle drag stop - wait 2 seconds then start drift-back
   const onDragStop = () => {
+    // Don't drift back during chaos mode (minigame)
+    if (isChaosMode) return;
+
     stopDrift();
 
     // Wait 2 seconds before starting drift
