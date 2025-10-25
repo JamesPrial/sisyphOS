@@ -14,10 +14,9 @@ const Icon = ({
   isDrifting,
   rotation,
 }) => {
-  const [clickCount, setClickCount] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
-  const clickTimer = useRef(null);
   const nodeRef = useRef(null);
+  const dragStartPos = useRef(null);
 
   const handleClick = (e) => {
     // Don't handle clicks if we just finished dragging
@@ -26,24 +25,8 @@ const Icon = ({
       return;
     }
 
-    setClickCount((prev) => prev + 1);
-
-    // Clear existing timer
-    if (clickTimer.current) {
-      clearTimeout(clickTimer.current);
-    }
-
     // Single click - select icon
-    if (clickCount === 0) {
-      onSelect?.();
-      clickTimer.current = setTimeout(() => {
-        setClickCount(0);
-      }, 300);
-    } else {
-      // Double click - open icon
-      setClickCount(0);
-      onDoubleClick?.();
-    }
+    onSelect?.();
   };
 
   const getIconEmoji = (name) => {
@@ -56,19 +39,37 @@ const Icon = ({
   };
 
   const handleDragStart = (e, data) => {
-    setIsDragging(true);
+    // Store starting position
+    dragStartPos.current = { x: data.x, y: data.y };
+    // Don't set isDragging yet - wait for actual movement
     onDragStart?.(e, data);
   };
 
   const handleDrag = (e, data) => {
+    // Only set isDragging if we've actually moved more than 5 pixels
+    if (dragStartPos.current) {
+      const dx = data.x - dragStartPos.current.x;
+      const dy = data.y - dragStartPos.current.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      if (distance > 5 && !isDragging) {
+        setIsDragging(true);
+      }
+    }
     onDrag?.(e, data);
   };
 
   const handleDragStop = (e, data) => {
-    // Small delay before allowing clicks again
-    setTimeout(() => {
+    // Reset immediately
+    dragStartPos.current = null;
+    if (isDragging) {
+      // Small delay before allowing clicks again only if we were actually dragging
+      setTimeout(() => {
+        setIsDragging(false);
+      }, 100);
+    } else {
+      // If we didn't drag, reset immediately
       setIsDragging(false);
-    }, 100);
+    }
     onDragStop?.(e, data);
   };
 
@@ -85,9 +86,8 @@ const Icon = ({
         ref={nodeRef}
         onClick={handleClick}
         onDoubleClick={(e) => {
-          // Also handle native double-click for better compatibility
+          // Only fire double-click if not dragging
           if (!isDragging) {
-            setClickCount(0);
             onDoubleClick?.();
           }
         }}
