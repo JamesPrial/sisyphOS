@@ -96,6 +96,16 @@ const About = () => {
             <strong>Multiplying Processes</strong> - Task manager where killing processes causes them to multiply
           </li>
           <li>
+            <strong>Claude Camus - AI Philosophical Advisor</strong> - An AI-powered chatbot assistant who
+            attempts to help you navigate SisyphOS but is equally confused, lost, and trapped. Powered by local
+            LLM with escalating existentialism, random conversation resets, and contradictory advice.
+          </li>
+          <li>
+            <strong>Virtual File System (VFS)</strong> - A cloud-based file system with escalating absurdism
+            that tracks your interactions and increases chaos probability over time. The more you use it,
+            the more chaotic it becomes - files disappear, rename themselves, and reality becomes negotiable.
+          </li>
+          <li>
             <strong>Circular Help System</strong> - Documentation that references itself in endless loops
           </li>
           <li>

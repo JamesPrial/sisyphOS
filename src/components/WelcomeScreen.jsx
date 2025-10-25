@@ -139,6 +139,20 @@ const WelcomeScreen = ({ onEnter }) => {
           </div>
           <div style={{ color: '#cfd8dc', fontSize: '0.9rem' }}>
             <span style={{ fontWeight: '600', color: '#fce4ec' }}>
+              Claude Camus - Your AI guide
+            </span>
+            <br />
+            An advisor who&apos;s just as lost as you are
+          </div>
+          <div style={{ color: '#cfd8dc', fontSize: '0.9rem' }}>
+            <span style={{ fontWeight: '600', color: '#fce4ec' }}>
+              Virtual File System
+            </span>
+            <br />
+            Files that escalate into chaos over time
+          </div>
+          <div style={{ color: '#cfd8dc', fontSize: '0.9rem' }}>
+            <span style={{ fontWeight: '600', color: '#fce4ec' }}>
               Help that helps nothing
             </span>
             <br />
