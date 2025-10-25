@@ -1,26 +1,55 @@
 import { useState, useEffect, useRef } from 'react';
 import ProgressBar from '../ProgressBar';
+import { getRandomDownloadError } from '../../data/philosophy';
 
 const FileDownload = () => {
   const [progress, setProgress] = useState(0);
   const [speed, setSpeed] = useState(0);
   const [timeRemaining, setTimeRemaining] = useState('Calculating...');
   const [resetCount, setResetCount] = useState(0);
+  const [isFailed, setIsFailed] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [retryCount, setRetryCount] = useState(0);
+  const [failurePoint, setFailurePoint] = useState(null);
   const intervalRef = useRef(null);
   const speedIntervalRef = useRef(null);
 
+  // Initialize random failure point on mount
   useEffect(() => {
+    // Generate random failure point between 60-99%
+    setFailurePoint(Math.floor(Math.random() * 40) + 60);
+  }, []); // Only on mount
+
+  useEffect(() => {
+    // Don't create intervals when in failed state
+    if (isFailed) {
+      return;
+    }
+
     // Update progress every 200ms (1% increment)
     intervalRef.current = setInterval(() => {
       setProgress((prev) => {
         const newProgress = prev + 1;
 
-        // Reset at 99%
-        if (newProgress >= 99) {
+        // Check for failure at failure point
+        if (!isFailed && newProgress >= failurePoint && prev < failurePoint) {
+          const failureChance = Math.min(30 + (retryCount * 15), 90);
+          if (Math.random() * 100 < failureChance) {
+            setIsFailed(true);
+            setErrorMessage(getRandomDownloadError());
+            clearInterval(intervalRef.current);
+            clearInterval(speedIntervalRef.current);
+            return failurePoint;
+          }
+        }
+
+        // Normal reset at 99% (success case)
+        if (newProgress >= 99 && !isFailed) {
           setTimeout(() => {
             setResetCount((count) => count + 1);
             setProgress(0);
             setTimeRemaining('Calculating...');
+            setFailurePoint(Math.floor(Math.random() * 40) + 60); // New random failure point
           }, 500);
           return 99;
         }
@@ -55,7 +84,17 @@ const FileDownload = () => {
         clearInterval(speedIntervalRef.current);
       }
     };
-  }, []);
+  }, [isFailed, retryCount, failurePoint]);
+
+  const handleRetry = () => {
+    setIsFailed(false);
+    setErrorMessage('');
+    setProgress(0);
+    setRetryCount((prev) => prev + 1);
+    setFailurePoint(Math.floor(Math.random() * 40) + 60); // 60-99%
+    setTimeRemaining('Calculating...');
+    // Note: intervals will be created by useEffect when isFailed changes to false
+  };
 
   return (
     <div
@@ -169,7 +208,7 @@ const FileDownload = () => {
           </div>
         </div>
 
-        {/* Reset Counter */}
+        {/* Attempt Counter */}
         <div
           style={{
             display: 'inline-block',
@@ -181,7 +220,14 @@ const FileDownload = () => {
             alignSelf: 'flex-start',
           }}
         >
-          Download Restarts: <span style={{ fontWeight: '700', color: 'var(--color-accent-primary)' }}>{resetCount}</span>
+          Attempts: <span style={{ fontWeight: '700', color: 'var(--color-accent-primary)' }}>
+            {resetCount + retryCount}
+          </span>
+          {retryCount > 0 && (
+            <span style={{ color: 'var(--color-text-tertiary)', marginLeft: '4px' }}>
+              ({retryCount} failed)
+            </span>
+          )}
         </div>
       </div>
 
@@ -189,6 +235,59 @@ const FileDownload = () => {
       <div style={{ marginTop: 'var(--spacing-md)' }}>
         <ProgressBar progress={progress} label="Download Progress" showPercentage={true} />
       </div>
+
+      {/* Error Message - shown when failed */}
+      {isFailed && (
+        <div
+          style={{
+            marginTop: 'var(--spacing-md)',
+            padding: 'var(--spacing-lg)',
+            backgroundColor: '#fee',
+            borderRadius: 'var(--radius-md)',
+            border: '2px solid var(--color-accent-secondary)',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)', marginBottom: 'var(--spacing-sm)' }}>
+            <div style={{ fontSize: '32px' }}>⚠️</div>
+            <div>
+              <div style={{ fontSize: '16px', fontWeight: '700', color: 'var(--color-accent-secondary)' }}>
+                Download Failed
+              </div>
+              <div style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
+                {errorMessage}
+              </div>
+            </div>
+          </div>
+          <button
+            onClick={handleRetry}
+            style={{
+              marginTop: 'var(--spacing-md)',
+              padding: 'var(--spacing-sm) var(--spacing-lg)',
+              backgroundColor: 'var(--color-accent-primary)',
+              color: '#ffffff',
+              borderRadius: 'var(--radius-md)',
+              fontSize: '13px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              border: 'none',
+              width: '100%',
+            }}
+          >
+            Retry Download
+          </button>
+          {retryCount > 0 && (
+            <div style={{
+              marginTop: 'var(--spacing-sm)',
+              fontSize: '11px',
+              color: 'var(--color-text-tertiary)',
+              textAlign: 'center',
+              fontStyle: 'italic'
+            }}>
+              Failure probability: {Math.min(30 + (retryCount * 15), 90)}%
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Note */}
       <div
@@ -202,7 +301,10 @@ const FileDownload = () => {
           color: 'var(--color-text-tertiary)',
         }}
       >
-        Your download will complete soon. Please be patient... forever.
+        {isFailed
+          ? "Perhaps the file was never meant to be downloaded."
+          : "Your download will complete soon. Please be patient... forever."
+        }
       </div>
     </div>
   );

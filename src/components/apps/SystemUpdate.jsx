@@ -4,35 +4,39 @@ import ProgressBar from '../ProgressBar';
 const SystemUpdate = () => {
   const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState('Preparing...');
-  const [resetCount, setResetCount] = useState(0);
   const intervalRef = useRef(null);
 
+  // Zeno's paradox: decay rate determines how much of the remaining distance to cover
+  const getDecayRate = (progress) => {
+    if (progress < 50) return 0.5;       // Moderate initial progress
+    if (progress < 80) return 0.2;       // Noticeable slowdown
+    if (progress < 95) return 0.05;      // Very slow
+    if (progress < 99) return 0.01;      // Extremely slow
+    if (progress < 99.9) return 0.001;   // Painfully slow
+    return 0.0001;                        // Glacially slow at 99.9%+
+  };
+
   useEffect(() => {
-    // Update progress every 200ms (1% increment)
+    // Update progress every 200ms using asymptotic formula
     intervalRef.current = setInterval(() => {
       setProgress((prev) => {
-        const newProgress = prev + 1;
+        const decayRate = getDecayRate(prev);
+        // Asymptotic formula: cover a fraction of the remaining distance
+        const newProgress = prev + (100 - prev) * decayRate;
 
         // Update status messages based on progress
         if (newProgress < 20) {
           setStatus('Preparing...');
         } else if (newProgress < 60) {
           setStatus('Installing updates...');
-        } else if (newProgress < 99) {
+        } else if (newProgress < 90) {
           setStatus('Finalizing...');
-        } else if (newProgress === 99) {
-          // At 99%, show completing message briefly
+        } else if (newProgress < 99) {
+          setStatus('Approaching completion...');
+        } else if (newProgress < 99.9) {
           setStatus('Almost there...');
-        }
-
-        // Reset at 99%
-        if (newProgress >= 99) {
-          setTimeout(() => {
-            setStatus('Starting over...');
-            setResetCount((count) => count + 1);
-            setProgress(0);
-          }, 500);
-          return 99;
+        } else {
+          setStatus('So close...');
         }
 
         return newProgress;
@@ -99,26 +103,11 @@ const SystemUpdate = () => {
         >
           Status: <span style={{ fontWeight: '500' }}>{status}</span>
         </div>
-
-        {/* Reset Counter */}
-        <div
-          style={{
-            display: 'inline-block',
-            padding: 'var(--spacing-sm) var(--spacing-md)',
-            backgroundColor: 'var(--color-bg-primary)',
-            borderRadius: 'var(--radius-md)',
-            fontSize: '13px',
-            color: 'var(--color-text-secondary)',
-            alignSelf: 'flex-start',
-          }}
-        >
-          Update Attempts: <span style={{ fontWeight: '700', color: 'var(--color-accent-primary)' }}>{resetCount}</span>
-        </div>
       </div>
 
       {/* Progress Bar */}
       <div style={{ marginTop: 'var(--spacing-md)' }}>
-        <ProgressBar progress={progress} label="Installing Updates" showPercentage={true} />
+        <ProgressBar progress={progress} label="Installing Updates" showPercentage={true} decimalPlaces={4} />
       </div>
 
       {/* Warning Message */}

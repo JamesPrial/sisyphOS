@@ -68,19 +68,26 @@ This isn't a buggy OS—it's intentionally absurd. Every "frustration" is carefu
 
 ---
 
-### 3. System Update (1 minute)
+### 3. System Update - Zeno's Paradox (1.5 minutes)
 **Action:**
 - Double-click "system_update.exe"
-- Watch the progress bar
+- Watch the progress bar approach 100%
+- Point out the decimal places (99.9876%, 99.9943%, etc.)
 
 **Talking Points:**
-- Progress bar that gets close but never completes
-- Phases: "Preparing...", "Installing...", "Almost done..."
-- Status messages are deliberately absurd
-- "The system is being updated to do the same thing it did before"
+- This demonstrates Zeno's Paradox through mathematics
+- The progress bar gets infinitely close to 100% but never arrives
+- Notice the 4 decimal places - showing progress down to 0.0001%
+- The closer it gets, the slower it moves - variable decay rates
+- At 99%+, progress becomes glacially slow
+- It will NEVER complete, only asymptotically approach completion
+- Status messages reflect this infinite approach
+
+**Philosophical Moment:**
+"Just like Zeno's arrow that must travel half the remaining distance infinitely, this update gets closer and closer but mathematically can never arrive. The futility is precise, calculated, and beautiful."
 
 **Key Line:**
-"This update will change nothing. Which is very honest, if you think about it."
+"This is what it looks like when mathematics proves something is impossible. And yet, we watch, hoping anyway."
 
 ---
 
@@ -139,9 +146,14 @@ This isn't a buggy OS—it's intentionally absurd. Every "frustration" is carefu
 ### 7. Other Features (Quick mentions - 30 seconds)
 **Briefly show or mention:**
 - **Desktop Organization** - organize.exe for temporary order
+- **Installation Wizard** - install.exe demonstrates eternal recurrence (resets at 99% infinitely)
+- **File Downloads** - download.exe shows classic infinite loop behavior
 - **Error Simulator** - errors.exe for existential error messages
 - **Uptime Counter** - "Time you'll never get back"
 - **About Dialog** - about.exe for project info
+
+**Note on Progress Bars:**
+"We have three different progress bar behaviors - System Update never completes (asymptotic), Installation Wizard resets infinitely (eternal recurrence), and Downloads loop endlessly. Three different philosophies of futility."
 
 ---
 

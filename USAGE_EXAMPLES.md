@@ -404,6 +404,230 @@ sessionStorage.removeItem('sisyphOS-welcome-seen');
 // Refresh page to see welcome dialog again
 ```
 
+## Progress Bar Usage
+
+### Basic Progress Bar (Integer Percentage)
+
+```jsx
+import ProgressBar from './components/ProgressBar';
+
+function BasicExample() {
+  const [progress, setProgress] = useState(45);
+
+  return (
+    <ProgressBar
+      progress={progress}
+      // decimalPlaces defaults to 0 for integer display
+    />
+  );
+}
+// Displays: 45%
+```
+
+### Asymptotic Progress Bar (Floating Point)
+
+```jsx
+import ProgressBar from './components/ProgressBar';
+import { useState, useEffect } from 'react';
+
+function AsymptoticExample() {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setProgress((current) => {
+        // Zeno's Paradox: approach 100 but never arrive
+        const remaining = 100 - current;
+
+        // Variable decay rate based on progress
+        let decayRate;
+        if (current < 50) decayRate = 0.5;
+        else if (current < 80) decayRate = 0.2;
+        else if (current < 95) decayRate = 0.05;
+        else if (current < 99) decayRate = 0.01;
+        else if (current < 99.9) decayRate = 0.001;
+        else decayRate = 0.0001;
+
+        const newProgress = current + remaining * decayRate;
+
+        // Never actually reach 100
+        return Math.min(newProgress, 99.9999);
+      });
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <ProgressBar
+      progress={progress}
+      decimalPlaces={4}  // Show up to 4 decimal places
+    />
+  );
+}
+// Displays: 99.9876%
+```
+
+### Infinite Loop Progress Bar
+
+```jsx
+import ProgressBar from './components/ProgressBar';
+import { useState, useEffect } from 'react';
+
+function InfiniteLoopExample() {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setProgress((current) => {
+        const newProgress = current + 1;
+
+        // Reset at 100%
+        if (newProgress >= 100) {
+          return 0;
+        }
+
+        return newProgress;
+      });
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <ProgressBar
+      progress={progress}
+      decimalPlaces={0}  // Integer display for loop
+    />
+  );
+}
+// Displays: 0% → 99% → 100% → 0% → ...
+```
+
+### Eternal Recurrence Progress Bar
+
+```jsx
+import ProgressBar from './components/ProgressBar';
+import { useState, useEffect, useRef } from 'react';
+
+function EternalRecurrenceExample() {
+  const [progress, setProgress] = useState(0);
+  const [cycles, setCycles] = useState(0);
+  const resetTimeoutRef = useRef(null);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setProgress((current) => {
+        const newProgress = current + 1;
+
+        // Auto-reset at 99%
+        if (newProgress >= 99) {
+          resetTimeoutRef.current = setTimeout(() => {
+            setProgress(0);
+            setCycles(prev => prev + 1);
+          }, 500);
+          return 99;
+        }
+
+        return newProgress;
+      });
+    }, 100);
+
+    return () => {
+      clearInterval(interval);
+      if (resetTimeoutRef.current) {
+        clearTimeout(resetTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  return (
+    <div>
+      <ProgressBar
+        progress={progress}
+        decimalPlaces={0}
+      />
+      <p>Cycle {cycles}</p>
+    </div>
+  );
+}
+// Displays: 0% → 99% → [pause] → 0% → 99% → ...
+// Cycle counter increments each time
+```
+
+### Custom Decimal Places
+
+```jsx
+// 1 decimal place (99.9%)
+<ProgressBar progress={99.87654} decimalPlaces={1} />
+
+// 2 decimal places (99.88%)
+<ProgressBar progress={99.87654} decimalPlaces={2} />
+
+// 3 decimal places (99.877%)
+<ProgressBar progress={99.87654} decimalPlaces={3} />
+
+// 4 decimal places (99.8765%)
+<ProgressBar progress={99.87654} decimalPlaces={4} />
+```
+
+### Complete SystemUpdate-style Implementation
+
+```jsx
+import ProgressBar from './components/ProgressBar';
+import { useState, useEffect } from 'react';
+
+function SystemUpdateExample() {
+  const [progress, setProgress] = useState(0);
+  const [status, setStatus] = useState('Initializing...');
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setProgress((current) => {
+        const remaining = 100 - current;
+
+        // Variable decay rate
+        let decayRate;
+        if (current < 50) {
+          decayRate = 0.5;
+          setStatus('Preparing system files...');
+        } else if (current < 80) {
+          decayRate = 0.2;
+          setStatus('Installing updates...');
+        } else if (current < 95) {
+          decayRate = 0.05;
+          setStatus('Almost done...');
+        } else if (current < 99) {
+          decayRate = 0.01;
+          setStatus('Finalizing...');
+        } else if (current < 99.9) {
+          decayRate = 0.001;
+          setStatus('Just a moment...');
+        } else {
+          decayRate = 0.0001;
+          setStatus('Approaching completion...');
+        }
+
+        return Math.min(current + remaining * decayRate, 99.9999);
+      });
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div>
+      <h3>System Update</h3>
+      <ProgressBar progress={progress} decimalPlaces={4} />
+      <p>{status}</p>
+      <p style={{ fontSize: '0.8em', color: '#666' }}>
+        This update will never complete. The closer it gets, the slower it moves.
+      </p>
+    </div>
+  );
+}
+```
+
 ## Summary
 
 The Philosophy & Dialogs system provides:
@@ -413,6 +637,13 @@ The Philosophy & Dialogs system provides:
 - Interactive error simulation
 - Rich philosophical content
 - Clean, extensible architecture
+
+The Progress Bar system provides:
+- Integer and floating-point percentage display
+- Support for asymptotic behaviors (Zeno's Paradox)
+- Support for infinite loops and eternal recurrence
+- Configurable decimal places (0-4)
+- Smooth, precise progress visualization
 
 All components work together to create an absurdist experience where users must accept reality as presented, embrace the meaningless, and find humor in the inevitable.
 

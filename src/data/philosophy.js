@@ -36,6 +36,36 @@ export const absurdistErrors = [
   "Error: Authenticity buffer overflow detected"
 ];
 
+export const technicalDownloadErrors = [
+  "Network timeout: Server took too long to respond",
+  "Error 403: Access forbidden - insufficient permissions",
+  "Error 404: File not found on remote server",
+  "Error 500: Internal server error occurred",
+  "Error 503: Service temporarily unavailable",
+  "Connection refused: Unable to establish connection to host",
+  "DNS resolution failed: Could not resolve hostname",
+  "Checksum verification failed: File integrity compromised",
+  "Insufficient disk space: Cannot save file to destination",
+  "Corrupt packet received: Data transmission error detected",
+  "SSL certificate expired: Secure connection cannot be established",
+  "Error: Download interrupted - connection reset by peer"
+];
+
+export const philosophicalDownloadErrors = [
+  "The file you seek cannot be obtained, only pursued",
+  "Download failed: Meaning.dll not found",
+  "Error: The destination was the journey all along",
+  "Network error: Connection to purpose lost",
+  "File transfer interrupted: The universe is indifferent to your needs",
+  "Error 404: Fulfillment not found at this address",
+  "Download cancelled: Free will is an illusion anyway",
+  "Bandwidth exceeded: You cannot download more than existence allows",
+  "Error: The file exists, but does it matter?",
+  "Transfer failed: Sisyphus.exe must be pushed, not downloaded",
+  "Connection timeout: Waiting for meaning that will never arrive",
+  "Download incomplete: Like all human endeavors"
+];
+
 export const helpTopics = [
   {
     title: "Getting Started",
@@ -382,3 +412,9 @@ export const getRandomChoiceDialog = () => getRandomItem(choiceDialogs);
 export const getRandomConfirmationLoop = () => getRandomItem(confirmationLoops);
 export const getRandomContradictoryDialog = () => getRandomItem(contradictoryDialogs);
 export const getRandomWaitingDialog = () => getRandomItem(waitingDialogs);
+export const getRandomDownloadError = () => {
+  // 50/50 chance of technical vs philosophical error
+  return Math.random() < 0.5
+    ? getRandomItem(technicalDownloadErrors)
+    : getRandomItem(philosophicalDownloadErrors);
+};

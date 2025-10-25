@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 
-const ProgressBar = ({ progress = 0, label, showPercentage = true }) => {
+const ProgressBar = ({ progress = 0, label, showPercentage = true, decimalPlaces = 0 }) => {
   // Color transitions: green -> yellow -> red
   const getProgressColor = (value) => {
     if (value < 50) {
@@ -73,7 +73,7 @@ const ProgressBar = ({ progress = 0, label, showPercentage = true }) => {
               mixBlendMode: progress > 50 ? 'normal' : 'difference',
             }}
           >
-            {Math.round(progress)}%
+            {decimalPlaces > 0 ? progress.toFixed(decimalPlaces) : Math.round(progress)}%
           </div>
         )}
       </div>

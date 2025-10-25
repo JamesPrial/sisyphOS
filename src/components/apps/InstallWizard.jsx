@@ -6,6 +6,7 @@ const InstallWizard = () => {
   const [progress, setProgress] = useState(0);
   const [completionCount, setCompletionCount] = useState(0);
   const intervalRef = useRef(null);
+  const resetTimeoutRef = useRef(null);
 
   const steps = ['Welcome', 'License Agreement', 'Installing', 'Complete'];
 
@@ -17,8 +18,13 @@ const InstallWizard = () => {
         setProgress((prev) => {
           const newProgress = prev + 1;
 
-          // Reset at 99%
+          // Auto-reset at 99%
           if (newProgress >= 99) {
+            resetTimeoutRef.current = setTimeout(() => {
+              setCompletionCount((count) => count + 1);
+              setProgress(0);
+              setCurrentStep(0);
+            }, 500);
             return 99;
           }
 
@@ -37,6 +43,9 @@ const InstallWizard = () => {
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
+      }
+      if (resetTimeoutRef.current) {
+        clearTimeout(resetTimeoutRef.current);
       }
     };
   }, [currentStep]);
@@ -188,7 +197,7 @@ const InstallWizard = () => {
               {progress < 50 && 'Copying files...'}
               {progress >= 50 && progress < 90 && 'Configuring system...'}
               {progress >= 90 && progress < 99 && 'Finalizing installation...'}
-              {progress >= 99 && 'Almost there! Click Next to complete.'}
+              {progress >= 99 && 'Almost there! Restarting cycle...'}
             </p>
           </div>
         );

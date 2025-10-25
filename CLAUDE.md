@@ -13,6 +13,77 @@
 
 **Core Philosophy:** Tasks that appear functional but are eternally futile - updates that never complete, files that drift back to original positions, processes that multiply when killed, progress bars that reset at 99%.
 
+## Recent Updates (2025-10-24)
+
+### Progress Bar Behavior Enhancements
+
+Enhanced the progress bar system to embody different philosophical concepts of futility through distinct mathematical behaviors:
+
+**1. ProgressBar Component Improvements (`src/components/ProgressBar.jsx`):**
+- Added `decimalPlaces` prop (default: 0) for floating-point percentage display
+- Supports up to 4 decimal places for asymptotic progress visualization
+- Backward compatible with existing integer percentage displays
+- Allows precise representation of infinitesimally small progress increments
+
+**2. SystemUpdate.jsx - Zeno's Paradox (Asymptotic Approach):**
+
+Completely redesigned from infinite loop to asymptotic behavior inspired by Zeno's Paradox. The progress bar approaches 100% infinitely slowly but never reaches it.
+
+**Mathematical Implementation:**
+- Formula: `newProgress = current + (100 - current) × decayRate`
+- Variable decay rates based on progress:
+  - 0-50%: 0.5 (moderate speed)
+  - 50-80%: 0.2 (noticeable slowdown)
+  - 80-95%: 0.05 (very slow)
+  - 95-99%: 0.01 (extremely slow)
+  - 99-99.9%: 0.001 (painfully slow)
+  - 99.9%+: 0.0001 (glacially slow)
+
+**Features:**
+- Displays 4 decimal places (e.g., 99.9876%)
+- Never reaches 100%, embodying Zeno's Paradox
+- Removed reset counter mechanism
+- Updated status messages to reflect asymptotic nature
+- Progress slows exponentially as it approaches completion
+
+**Philosophical Meaning:**
+Like Zeno's arrow that theoretically never reaches its target, the system update approaches completion but can never truly arrive. The closer you get, the slower you move - an infinite pursuit of an unreachable goal.
+
+**3. InstallWizard.jsx - Eternal Recurrence (Infinite Loop):**
+
+Added automatic reset mechanism embodying Nietzsche's concept of eternal recurrence.
+
+**Features:**
+- Auto-resets at exactly 99% progress
+- 500ms delay before returning to Welcome screen
+- Increments completion counter each cycle
+- Status message: "Restarting cycle..."
+- Proper cleanup with resetTimeoutRef to prevent memory leaks
+
+**Philosophical Meaning:**
+The installation completes an infinite number of times, each cycle identical to the last. Like the eternal return, you experience the same futile journey again and again.
+
+**4. FileDownload.jsx - Unchanged:**
+
+Retains existing infinite loop behavior (resets at 100%) for variety in futility mechanisms.
+
+### Component File Locations
+
+**Modified Components:**
+- `/src/components/ProgressBar.jsx` - Enhanced with decimal place support
+- `/src/components/apps/SystemUpdate.jsx` - Asymptotic behavior (Zeno's Paradox)
+- `/src/components/apps/InstallWizard.jsx` - Infinite loop (Eternal Recurrence)
+
+### Philosophical Distinctions
+
+The project now features three distinct approaches to futile progress:
+
+1. **Asymptotic Futility (SystemUpdate):** Never completing, always approaching
+2. **Cyclical Futility (InstallWizard):** Completing infinitely, eternally recurring
+3. **Reset Futility (FileDownload):** Completing and immediately restarting
+
+Each embodies a different philosophical perspective on meaningless tasks, enriching the absurdist experience.
+
 ## Critical Bug Fix (2025-10-24)
 
 ### The Problem
@@ -135,7 +206,10 @@ Files without custom components (README.txt, boulder.exe) show fallback UI with 
 ### Absurdist Features
 
 1. **Boulder File Manager**: Desktop icons drift back to original positions after 2-second delay (useBoulderPhysics.js)
-2. **Sisyphean Progress Bars**: Reset at 99% and start over (SystemUpdate, FileDownload, InstallWizard)
+2. **Sisyphean Progress Bars**: Three distinct futility mechanisms embodying different philosophical concepts:
+   - **SystemUpdate**: Asymptotic approach (Zeno's Paradox) - approaches 100% infinitely but never arrives, displays up to 4 decimal places (99.9876%)
+   - **InstallWizard**: Eternal recurrence - auto-resets at 99% and repeats the cycle infinitely
+   - **FileDownload**: Infinite loop - resets at 100% and starts over immediately
 3. **Futile Task Manager**: Processes respawn with higher CPU/memory, multiply after 3 kills (useProcessManager.js)
 4. **Philosophy Dialogs**: Inescapable dialogs with Camus quotes, ESC key disabled
 5. **Happy Mode**: Toggle that changes aesthetics (bright gradients, sparkles) but keeps futility intact

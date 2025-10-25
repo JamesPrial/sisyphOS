@@ -30,10 +30,16 @@ SisyphOS embodies this philosophy through:
 Desktop icons behave like Sisyphus' boulder. Move them anywhere you like, but watch as they slowly drift back to their original positions, pulled by an invisible force of futility.
 
 ### Infinite Progress Bars
-- **System Updates** that update nothing but never complete
-- **Downloads** that download indefinitely
-- **Installation Wizards** with steps that lead nowhere
-- Progress bars that get tantalizingly close to 100% but never arrive
+
+Three distinct approaches to futile progress, each embodying a different philosophical concept:
+
+- **System Updates (Zeno's Paradox)**: Asymptotic approach to completion - the progress bar gets infinitesimally close to 100% (displaying up to 4 decimal places like 99.9876%) but mathematically never arrives. The closer it gets, the slower it moves, embodying Zeno's famous paradox where motion seems impossible when divided infinitely.
+
+- **Installation Wizard (Eternal Recurrence)**: Inspired by Nietzsche's concept of eternal return - the installation reaches 99%, pauses briefly, then automatically resets to the beginning, repeating the same cycle infinitely. Each completion is identical to the last, an endless loop of the same experience.
+
+- **File Downloads (Classic Loop)**: Traditional infinite loop - downloads complete at 100% only to immediately reset and begin again, demonstrating the futility of completion when the task simply repeats endlessly.
+
+Each progress bar uses floating-point precision to display the increasingly small increments of progress, making the futility mathematically precise and philosophically meaningful.
 
 ### Multiplying Processes
 Open the Task Manager and try to kill processes. For every process you end, two more spawn in its place. The more you struggle against the system, the more it multiplies. Eventually, you may choose to simply accept them all.
