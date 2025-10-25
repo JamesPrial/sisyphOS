@@ -19,6 +19,26 @@ const addApiKeyParam = (url) => {
 };
 
 export const fileSystemAPI = {
+  async getEscalation() {
+    const url = addApiKeyParam(`${API_URL}/api/escalation`);
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('Failed to get escalation');
+    return response.json();
+  },
+
+  async updateEscalation(interactions) {
+    const url = addApiKeyParam(`${API_URL}/api/escalation`);
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ interactions }),
+    });
+    if (!response.ok) throw new Error('Failed to update escalation');
+    return response.json();
+  },
+
   async listFiles(parentId = null) {
     const baseUrl = parentId ? `${API_URL}/api/files?parent_id=${parentId}` : `${API_URL}/api/files`;
     const url = addApiKeyParam(baseUrl);
@@ -88,6 +108,29 @@ export const fileSystemAPI = {
       body: JSON.stringify({ query }),
     });
     if (!response.ok) throw new Error('Search failed');
+    return response.json();
+  },
+
+  async renameFile(fileId, newName) {
+    const url = addApiKeyParam(`${API_URL}/api/files/${fileId}/rename`);
+    const response = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ name: newName }),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error || 'Failed to rename file');
+    }
+    return data;
+  },
+
+  async checkRespawns() {
+    const url = addApiKeyParam(`${API_URL}/api/respawn-check`);
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('Respawn check failed');
     return response.json();
   },
 };

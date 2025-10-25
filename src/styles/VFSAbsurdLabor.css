@@ -1,0 +1,670 @@
+/* VFS Absurd Labor Styling */
+
+.vfs-dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.vfs-dialog {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  min-width: 400px;
+  max-width: 500px;
+  animation: slideIn 0.3s ease-out;
+}
+
+.vfs-dialog h3 {
+  margin: 0 0 20px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+}
+
+.vfs-dialog p {
+  margin: 10px 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.vfs-dialog p strong {
+  color: #333;
+  font-weight: 600;
+}
+
+.vfs-dialog .status {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 13px;
+  color: #888;
+  font-style: italic;
+}
+
+.vfs-dialog button {
+  padding: 10px 20px;
+  margin-top: 20px;
+  border: none;
+  border-radius: 4px;
+  background: #4a90e2;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+  width: 100%;
+}
+
+.vfs-dialog button:hover {
+  background: #357abd;
+}
+
+/* Rename Dialog */
+.rename-dialog {
+  text-align: center;
+}
+
+.rename-dialog .status {
+  font-weight: 600;
+  color: #4a90e2;
+}
+
+/* Error Dialog (Absurd) */
+.error-dialog.absurd {
+  background: linear-gradient(135deg, rgba(255, 100, 100, 0.05) 0%, rgba(255, 200, 100, 0.05) 100%);
+  border: 2px solid #ff6464;
+}
+
+.error-dialog.absurd h3 {
+  color: #ff6464;
+}
+
+.error-dialog.absurd .error-message {
+  background: rgba(255, 100, 100, 0.1);
+  padding: 15px;
+  border-radius: 6px;
+  font-style: italic;
+  text-align: center;
+  color: #333;
+  font-size: 15px;
+  margin: 20px 0;
+  line-height: 1.6;
+}
+
+.error-dialog.absurd button {
+  background: #ff6464;
+}
+
+.error-dialog.absurd button:hover {
+  background: #e04545;
+}
+
+/* Delete Failed Dialog */
+.delete-failed-dialog {
+  background: rgba(0, 0, 0, 0.95);
+  color: white;
+  border: 2px solid #ffcc00;
+}
+
+.delete-failed-dialog h3 {
+  color: #ffcc00;
+  text-align: center;
+}
+
+.delete-failed-dialog .error-message {
+  background: rgba(255, 204, 0, 0.1);
+  padding: 15px;
+  border-radius: 6px;
+  font-style: italic;
+  text-align: center;
+  color: #ffcc00;
+  font-size: 15px;
+  margin: 20px 0;
+  line-height: 1.6;
+}
+
+.delete-failed-dialog .hint {
+  color: #ffcc00;
+  font-size: 14px;
+  text-align: center;
+  margin: 10px 0;
+  font-weight: 600;
+}
+
+.delete-failed-dialog button {
+  background: #ffcc00;
+  color: #333;
+  width: auto;
+  flex: 1;
+}
+
+.delete-failed-dialog button:hover {
+  background: #e6b800;
+}
+
+.delete-failed-dialog button:last-child {
+  background: #666;
+  color: white;
+}
+
+.delete-failed-dialog button:last-child:hover {
+  background: #555;
+}
+
+/* Quantum Features */
+.quantum-file {
+  position: relative;
+}
+
+.quantum-badge {
+  font-size: 16px;
+  animation: quantum-spin 3s linear infinite;
+  cursor: help;
+  display: inline-block;
+}
+
+.phantom-badge {
+  opacity: 0.5;
+  animation: fade-pulse 2s ease-in-out infinite;
+}
+
+/* Quantum Observer Overlay */
+.observation-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  animation: fadeIn 0.3s;
+}
+
+.quantum-collapse {
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  text-align: center;
+  max-width: 400px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.quantum-collapse h3 {
+  margin: 0 0 15px 0;
+  font-size: 24px;
+  color: #3498db;
+}
+
+.quantum-collapse p {
+  font-style: italic;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.collapse-animation {
+  width: 100px;
+  height: 100px;
+  margin: 20px auto;
+  border: 4px solid #3498db;
+  border-radius: 50%;
+  border-top-color: transparent;
+  animation: spin 1s linear infinite;
+}
+
+/* Quantum Folder Warning */
+.quantum-warning {
+  background: rgba(255, 165, 0, 0.2);
+  border: 2px solid #ffa500;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  text-align: center;
+  animation: slideIn 0.3s ease-out;
+}
+
+.quantum-warning span {
+  font-size: 20px;
+  margin-right: 8px;
+}
+
+.quantum-warning .hint {
+  font-size: 12px;
+  font-style: italic;
+  color: #666;
+  margin-top: 8px;
+}
+
+/* Search Variance Notice */
+.search-variance-notice {
+  background: rgba(100, 149, 237, 0.2);
+  border: 2px solid #6495ed;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.search-variance-notice p {
+  margin: 5px 0;
+  color: #333;
+}
+
+.search-variance-notice .hint {
+  font-size: 12px;
+  font-style: italic;
+  color: #666;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes quantum-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fade-pulse {
+  0%, 100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* ETERNAL RECURRENCE STYLES */
+
+/* Respawned Files */
+.respawned {
+  animation: ghost-glow 2s ease-in-out;
+}
+
+@keyframes ghost-glow {
+  0%, 100% {
+    background-color: transparent;
+  }
+  50% {
+    background-color: rgba(128, 128, 255, 0.2);
+  }
+}
+
+/* Déjà Vu Message */
+.deja-vu-message {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 20px 40px;
+  border-radius: 8px;
+  font-style: italic;
+  z-index: 9999;
+  animation: fade-in-out 2s ease-in-out;
+  box-shadow: 0 4px 20px rgba(128, 128, 255, 0.5);
+  max-width: 500px;
+  text-align: center;
+  border: 2px solid rgba(128, 128, 255, 0.5);
+}
+
+@keyframes fade-in-out {
+  0%, 100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Ghost Badge (Respawned Files) */
+.ghost-badge {
+  margin-left: 8px;
+  font-size: 16px;
+  cursor: help;
+  animation: float 3s ease-in-out infinite;
+  display: inline-block;
+}
+
+/* Duplicate Badge */
+.duplicate-badge {
+  margin-left: 8px;
+  font-size: 16px;
+  cursor: help;
+  animation: spin-slow 8s linear infinite;
+  display: inline-block;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes spin-slow {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* ===== CHAOS DASHBOARD ===== */
+
+.chaos-dashboard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background: var(--color-bg-secondary);
+  border-bottom: 2px solid var(--color-border);
+  transition: all 0.3s ease;
+}
+
+.chaos-dashboard.chaos-level-0 {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.chaos-dashboard.chaos-level-1 {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.chaos-dashboard.chaos-level-2 {
+  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+}
+
+.chaos-dashboard.chaos-level-3 {
+  background: linear-gradient(135deg, #ff0844 0%, #ffb199 100%);
+  animation: chaos-pulse 2s ease-in-out infinite;
+}
+
+@keyframes chaos-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.85; }
+}
+
+/* Dashboard Components */
+.dashboard-left h3 {
+  margin: 0;
+  color: white;
+  font-size: 18px;
+}
+
+.path-display {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  margin-left: 10px;
+}
+
+.dashboard-right {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+}
+
+/* Escalation Meter */
+.escalation-meter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.meter-label {
+  color: white;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.meter-bar {
+  width: 150px;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.meter-fill {
+  height: 100%;
+  background: white;
+  transition: width 0.5s ease;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.meter-value {
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+/* Chaos Stats */
+.chaos-stats {
+  display: flex;
+  gap: 20px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.stat-icon {
+  font-size: 20px;
+}
+
+.stat-value {
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.stat-label {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+/* ===== FILE LIST ESCALATION THEMES ===== */
+
+.file-browser.escalation-0 {
+  /* Normal blue theme */
+  --file-hover: rgba(66, 153, 225, 0.1);
+}
+
+.file-browser.escalation-1 {
+  /* Warning orange theme */
+  --file-hover: rgba(255, 140, 0, 0.1);
+}
+
+.file-browser.escalation-1 .file-item:hover {
+  background: var(--file-hover);
+  border-left: 3px solid #ff8c00;
+}
+
+.file-browser.escalation-2 {
+  /* Danger red theme */
+  --file-hover: rgba(255, 0, 0, 0.1);
+}
+
+.file-browser.escalation-2 .file-item:hover {
+  background: var(--file-hover);
+  border-left: 3px solid #ff0000;
+}
+
+.file-browser.escalation-3 {
+  /* Chaos glitch theme */
+  --file-hover: rgba(255, 0, 100, 0.15);
+}
+
+.file-browser.escalation-3 .file-item:hover {
+  background: var(--file-hover);
+  border-left: 3px solid #ff0064;
+  animation: glitch 0.5s steps(2, end) infinite;
+}
+
+@keyframes glitch {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  50% { transform: translateX(2px); }
+  75% { transform: translateX(-1px); }
+  100% { transform: translateX(0); }
+}
+
+/* ===== BADGE CONSOLIDATION ===== */
+
+.badge-container {
+  display: flex;
+  gap: 6px;
+  margin-left: auto;
+  margin-right: 20px;
+}
+
+.badge {
+  font-size: 16px;
+  cursor: help;
+  transition: transform 0.2s;
+}
+
+.badge:hover {
+  transform: scale(1.2);
+}
+
+.entropy-badge {
+  animation: mutation-pulse 2s ease-in-out infinite;
+}
+
+@keyframes mutation-pulse {
+  0%, 100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.3);
+  }
+}
+
+.respawn-badge {
+  animation: ghost-float 3s ease-in-out infinite;
+}
+
+@keyframes ghost-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.duplicate-badge {
+  animation: duplicate-spin 6s linear infinite;
+}
+
+@keyframes duplicate-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.original-name-hint {
+  color: #999;
+  font-size: 12px;
+  font-style: italic;
+  margin-left: 8px;
+}
+
+/* ===== CHAOS LEVEL WARNINGS ===== */
+
+.chaos-warning {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px 20px;
+  margin: 15px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  animation: fade-in 0.5s;
+}
+
+.chaos-warning.warning-level-1 {
+  background: rgba(255, 140, 0, 0.15);
+  border: 2px solid #ff8c00;
+  color: #ff8c00;
+}
+
+.chaos-warning.warning-level-2 {
+  background: rgba(255, 0, 0, 0.15);
+  border: 2px solid #ff0000;
+  color: #ff0000;
+}
+
+.chaos-warning.warning-level-3 {
+  background: rgba(255, 0, 100, 0.2);
+  border: 2px solid #ff0064;
+  color: #ff0064;
+  animation: warning-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes warning-pulse {
+  0%, 100% { box-shadow: 0 0 0 rgba(255, 0, 100, 0.4); }
+  50% { box-shadow: 0 0 20px rgba(255, 0, 100, 0.8); }
+}
+
+.warning-icon {
+  font-size: 24px;
+}
+
+.chaos-warning p {
+  margin: 0;
+  font-weight: 500;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

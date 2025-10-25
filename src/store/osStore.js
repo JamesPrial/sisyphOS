@@ -45,6 +45,9 @@ const useOSStore = create((set) => ({
   vfsApiKey: typeof window !== 'undefined' ? localStorage.getItem('vfs_api_key') : null,
   vfsIsAuthenticated: typeof window !== 'undefined' ? !!localStorage.getItem('vfs_api_key') : false,
 
+  // VFS Escalation state
+  vfsEscalationLevel: 0,
+
   // Window actions
   addWindow: (window) =>
     set((state) => ({
@@ -255,6 +258,22 @@ const useOSStore = create((set) => ({
       return localStorage.getItem('vfs_api_key');
     }
     return null;
+  },
+
+  // VFS Escalation actions
+  incrementVFSEscalation: (amount = 1) =>
+    set((state) => ({
+      vfsEscalationLevel: Math.min(10, state.vfsEscalationLevel + amount),
+    })),
+
+  setVFSEscalation: (level) =>
+    set(() => ({
+      vfsEscalationLevel: Math.min(10, Math.max(0, level)),
+    })),
+
+  getVFSChaosMultiplier: () => {
+    const state = useOSStore.getState();
+    return state.vfsEscalationLevel / 10;
   },
 }));
 
