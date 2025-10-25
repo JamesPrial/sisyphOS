@@ -25,13 +25,20 @@ export function useDesktopChaos(desktopFiles, updatePosition) {
   const startTimeRef = useRef(null);
   const lastUpdateRef = useRef(Date.now());
   const draggedIconRef = useRef(null); // Currently dragged icon ID
+  const desktopFilesRef = useRef(desktopFiles); // Keep current reference
+
+  // Update the ref whenever desktopFiles changes
+  useEffect(() => {
+    desktopFilesRef.current = desktopFiles;
+  }, [desktopFiles]);
 
   // Initialize icon states
   const initializeIconStates = () => {
     const states = new Map();
     const now = Date.now();
+    const currentFiles = desktopFilesRef.current;
 
-    desktopFiles.forEach(file => {
+    currentFiles.forEach(file => {
       const angle = Math.random() * Math.PI * 2;
       const initialSpeed = 1 + Math.random() * 0.5; // 1-1.5 px/frame
 
@@ -116,13 +123,14 @@ export function useDesktopChaos(desktopFiles, updatePosition) {
 
     const bounds = getScreenBounds();
     const states = iconStatesRef.current;
+    const currentFiles = desktopFilesRef.current; // Use current ref value
     let returnedCount = 0;
 
     // Gradual speed increase every second
     const secondsElapsed = (now - startTimeRef.current) / 1000;
     const speedMultiplier = Math.min(1 + secondsElapsed * 0.05, 8); // Cap at 8x
 
-    desktopFiles.forEach(file => {
+    currentFiles.forEach(file => {
       const state = states.get(file.id);
       if (!state) return;
 
