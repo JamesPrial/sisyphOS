@@ -106,6 +106,7 @@ export default class VFSService extends Service<Env> {
 
   private corsResponse(): Response {
     return new Response(null, {
+      status: 200,
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
