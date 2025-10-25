@@ -8,6 +8,7 @@ import Dialog from './components/Dialog';
 import ChoiceDialog from './components/ChoiceDialog';
 import WelcomeScreen from './components/WelcomeScreen';
 import { NotificationManager } from './components/PhilosophyNotification';
+import ClippyAssistant from './components/ClippyAssistant';
 import usePhilosophyNotifications from './hooks/usePhilosophyNotifications';
 import { useIntrusiveDialogs } from './hooks/useIntrusiveDialogs';
 import { getRandomWelcomeMessage, getRandomEncouragementMessage } from './data/philosophy';
@@ -113,6 +114,9 @@ function App() {
         notifications={notifications}
         onDismiss={dismissNotification}
       />
+
+      {/* Clippy Assistant pop-up */}
+      <ClippyAssistant />
 
       {/* Welcome dialog */}
       {welcomeMessage && (

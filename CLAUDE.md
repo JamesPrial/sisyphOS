@@ -148,6 +148,120 @@ This minigame embodies **escalating futility with false hope**. Unlike the other
 
 Like Sisyphus herding his boulder, you can momentarily succeed, but entropy always wins. The game speeds up, icons betray you faster, and the struggle itself becomes the meaning. One must imagine the desktop organizer happy.
 
+### Claude Camus - AI-Powered Absurdist Chatbot (2025-10-25)
+
+Added an AI-powered philosophical advisor chatbot named "Claude Camus" - a double reference to both Claude AI (Anthropic) and existentialist philosopher Albert Camus.
+
+**Concept:**
+An AI assistant doomed to eternal philosophical conversations about futility. Powered by local Ollama LLM integration with graceful fallback to static responses when AI is unavailable.
+
+**AI Integration (`src/services/aiService.js`):**
+- **Local LLM**: Connects to Ollama running on localhost:11434
+- **Models**:
+  - `llama3.2:3b` for chat (better quality, coherent responses)
+  - `llama3.2:1b` for batch message generation (faster)
+- **System Prompt**: Instructs AI to be philosophical, embrace futility, reference Camus/Sisyphus, occasionally contradict itself
+- **Graceful Degradation**: Falls back to static absurdist responses when Ollama is offline
+- **Connection Check**: Automatically detects Ollama availability on component mount
+
+**Absurdist Chat Behaviors:**
+
+1. **Random Conversation Resets (Eternal Recurrence)**
+   - Probability increases with message count: `5% + (messageCount × 2%)`
+   - Caps at 40% chance per message
+   - Displays: "I must imagine myself happy. [CONVERSATION RESET]"
+   - Resets conversation history after brief pause
+
+2. **Endless Typing Indicator (False Hope)**
+   - 5% chance per message
+   - Shows "Contemplating the nature of your question..." for 8-15 seconds
+   - Eventually delivers actual response (hope was not entirely false)
+
+3. **Escalating Existentialism**
+   - Escalation level: `Math.floor(messageCount / 2)`
+   - Level 5+: Questions the nature of user's questions, suggests accepting futility
+   - Level 10+: Deeply existentialist, relates everything to absurdity and meaninglessness
+   - Increases AI temperature with escalation: `0.7 + (level × 0.02)`
+
+4. **Contradictory Advice**
+   - 15% chance after 3+ messages
+   - Casually contradicts previous statement with full confidence
+   - "As if you never said the opposite"
+
+**Message Generation System:**
+
+**Build-Time Generation (`scripts/generate-messages.js`):**
+```bash
+npm run generate  # Generates 140 messages using Ollama
+```
+
+Generated message categories:
+- 30 philosophical notifications
+- 25 absurdist error messages
+- 20 system boot messages
+- 40 advisor response templates
+- 25 Clippy helper tips
+
+**Runtime Cache (`src/data/generated-philosophy.json`):**
+- Pre-generated messages saved to JSON
+- Includes metadata (generation timestamp, model, count)
+- Merged with static fallback messages
+- Used when Ollama is offline
+
+**Chat Interface (`src/components/apps/PhilosophyAdvisor.jsx`):**
+- Full conversation history with user/assistant messages
+- Ollama connection status indicator (green = connected, yellow = offline)
+- Existentialism level display (shown when level > 3)
+- Message count tracking with philosophical commentary
+- Auto-scroll to latest message
+- Typing indicators (normal and endless variants)
+- Clean, minimal chat UI matching OS aesthetic
+
+**Clippy Assistant Integration (`src/components/ClippyAssistant.jsx`):**
+- Animated paperclip helper (📎) with bounce animation
+- Appears contextually based on user struggle:
+  - FileDownload: After 3+ failed downloads
+  - TaskManager: After 5+ process kills
+  - OrganizeDesktop: When giving up chaos minigame
+- Spring physics entrance/exit animations (framer-motion)
+- Shows context-aware tips from generated messages
+- Two action buttons: primary action + dismiss
+
+**Special Window Configuration:**
+- Window size: 900×700 (larger than default for comfortable chat)
+- Resizable with standard window controls
+- Icon: 💭 (thought bubble)
+- File: `Claude Camus.exe` on desktop at position (180, 50)
+
+**Component File Locations:**
+- `/src/services/aiService.js` - NEW: Ollama API integration layer
+- `/src/components/apps/PhilosophyAdvisor.jsx` - NEW: Chat interface
+- `/src/components/ClippyAssistant.jsx` - NEW: Popup helper
+- `/scripts/generate-messages.js` - NEW: Build-time message generator
+- `/src/data/generated-philosophy.json` - NEW: Generated message cache
+- `/src/data/philosophy.js` - MODIFIED: Added advisor/clippy exports
+- `/src/store/osStore.js` - MODIFIED: Added Clippy state management
+- `/src/components/Window.jsx` - MODIFIED: Added Claude Camus case
+- `/src/components/Desktop.jsx` - MODIFIED: Special window size
+- `/src/components/apps/FileDownload.jsx` - MODIFIED: Clippy trigger
+- `/src/components/apps/TaskManager.jsx` - MODIFIED: Clippy trigger
+- `/src/components/apps/OrganizeDesktop.jsx` - MODIFIED: Clippy trigger
+
+**Setup Requirements:**
+```bash
+# Install Ollama (https://ollama.ai)
+# Pull models
+ollama pull llama3.2:1b  # Fast model for batch generation
+ollama pull llama3.2:3b  # Better quality for chat
+
+# Ollama auto-starts on port 11434
+# Generate messages (optional - has fallbacks)
+npm run generate
+```
+
+**Philosophical Meaning:**
+Claude Camus embodies the absurdity of seeking help from an AI that's just as trapped and confused as you are. The conversation resets randomly (eternal recurrence), advice contradicts itself (no objective truth), existentialism escalates (descent into meaninglessness), and the typing indicator sometimes lies (false hope). Yet through accepting this absurd dialogue, meaning emerges from the struggle itself. One must imagine the help-seeker happy.
+
 ### Progress Bar Behavior Enhancements (2025-10-24)
 
 Enhanced the progress bar system to embody different philosophical concepts of futility through distinct mathematical behaviors:

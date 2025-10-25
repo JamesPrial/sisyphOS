@@ -1,7 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import useProcessManager from '../../hooks/useProcessManager';
+import useOSStore from '../../store/osStore';
+import { getRandomClippyTip } from '../../data/philosophy';
 
 const TaskManager = () => {
+  const { showClippy } = useOSStore();
   const {
     processes,
     totalKills,
@@ -14,6 +17,16 @@ const TaskManager = () => {
 
   const [showMultiplyMessage, setShowMultiplyMessage] = useState(false);
   const [sortField, setSortField] = useState(null);
+
+  // Trigger Clippy after 5 process kills
+  useEffect(() => {
+    if (totalKills >= 5) {
+      showClippy(
+        getRandomClippyTip(),
+        `Processes killed: ${totalKills}`
+      );
+    }
+  }, [totalKills, showClippy]);
 
   // Handle process kill with visual feedback
   const handleKillProcess = (processId, killCount) => {

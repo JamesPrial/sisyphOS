@@ -18,6 +18,7 @@ const useOSStore = create((set) => ({
     { id: 'file-9', name: 'help.exe', type: 'executable', x: 300, y: 50, originalX: 300, originalY: 50, icon: '📖' },
     { id: 'file-10', name: 'errors.exe', type: 'executable', x: 300, y: 150, originalX: 300, originalY: 150, icon: '⚠️' },
     { id: 'file-11', name: 'about.exe', type: 'executable', x: 300, y: 250, originalX: 300, originalY: 250, icon: 'ℹ️' },
+    { id: 'file-12', name: 'Claude Camus.exe', type: 'executable', x: 180, y: 50, originalX: 180, originalY: 50, icon: '💭' },
   ],
 
   // Desktop organization tracking
@@ -32,6 +33,13 @@ const useOSStore = create((set) => ({
   // Dialog state
   currentDialog: null,
 
+  // Clippy Assistant state
+  clippyState: {
+    isVisible: false,
+    message: null,
+    context: null,
+  },
+
   // Window actions
   addWindow: (window) =>
     set((state) => ({
@@ -42,7 +50,7 @@ const useOSStore = create((set) => ({
           id: window.id || `window-${Date.now()}`,
           zIndex: state.openWindows.length + 1,
           position: window.position || { x: 100 + state.openWindows.length * 30, y: 100 + state.openWindows.length * 30 },
-          size: window.size || { width: 600, height: 400 },
+          size: window.size || { width: 800, height: 600 },
         },
       ],
       focusedWindowId: window.id || `window-${Date.now()}`,
@@ -191,6 +199,25 @@ const useOSStore = create((set) => ({
   hideDialog: () =>
     set(() => ({
       currentDialog: null,
+    })),
+
+  // Clippy Assistant actions
+  showClippy: (message, context = null) =>
+    set(() => ({
+      clippyState: {
+        isVisible: true,
+        message,
+        context,
+      },
+    })),
+
+  dismissClippy: () =>
+    set(() => ({
+      clippyState: {
+        isVisible: false,
+        message: null,
+        context: null,
+      },
     })),
 }));
 

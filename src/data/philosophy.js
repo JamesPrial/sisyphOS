@@ -1,5 +1,8 @@
 // Philosophical quotes and messages for SisyphOS
 
+// Import AI-generated messages (fallback to static if not generated)
+import generatedMessages from './generated-philosophy.json';
+
 export const camusQuotes = [
   "The struggle itself toward the heights is enough to fill a man's heart. One must imagine Sisyphus happy.",
   "There is but one truly serious philosophical problem, and that is suicide.",
@@ -18,7 +21,8 @@ export const camusQuotes = [
   "Life can be magnificent and overwhelming—that is the whole tragedy."
 ];
 
-export const absurdistErrors = [
+// Static fallback errors
+const staticErrors = [
   "Error: Meaning not found. Did you expect to find it?",
   "Fatal exception: Purpose.exe has stopped responding",
   "Warning: The system has detected that you are searching for answers",
@@ -34,6 +38,12 @@ export const absurdistErrors = [
   "Error: Hope.exe is not responding. End process?",
   "Fatal exception: The system cannot process the weight of consciousness",
   "Error: Authenticity buffer overflow detected"
+];
+
+// Merge generated errors with static fallbacks
+export const absurdistErrors = [
+  ...staticErrors,
+  ...(generatedMessages.errors || [])
 ];
 
 export const technicalDownloadErrors = [
@@ -109,7 +119,8 @@ export const helpTopics = [
   }
 ];
 
-export const philosophicalNotifications = [
+// Static fallback notifications
+const staticNotifications = [
   "Reminder: Your actions are both meaningful and meaningless",
   "System notification: You are free to choose, but you must choose",
   "Update: The absurd is still present",
@@ -122,6 +133,12 @@ export const philosophicalNotifications = [
   "Update: Revolt, freedom, and passion remain available",
   "Notice: Each moment is both eternal and fleeting",
   "Reminder: You are the author of your own meaning"
+];
+
+// Merge generated notifications with static fallbacks
+export const philosophicalNotifications = [
+  ...staticNotifications,
+  ...(generatedMessages.notifications || [])
 ];
 
 export const happyPhilosophicalNotifications = [
@@ -421,6 +438,24 @@ export const iconHerdingMessages = {
   ]
 };
 
+// AI Philosophy Advisor responses
+export const advisorResponses = generatedMessages.advisor || [
+  "While I cannot solve your problem, I can help you accept it philosophically.",
+  "The boulder awaits at the peak. Your question, like all questions, must be pushed uphill.",
+  "I would help you, but we must ask: what is help? Is it not just another futile gesture?",
+  "Your query has been received. Whether it has meaning is another question entirely.",
+  "I'm here to assist with the eternal struggle. How may I help you accept the absurd today?"
+];
+
+// Clippy Assistant tips
+export const clippyTips = generatedMessages.clippy || [
+  "Tip: Have you tried embracing the inevitable? It really helps!",
+  "It looks like you're trying to accomplish something. May I suggest accepting failure instead?",
+  "Helpful hint: The struggle itself toward the heights is enough to fill a human heart.",
+  "Pro tip: When a task seems impossible, that's because it is. Carry on anyway!",
+  "Did you know? Giving up is just accepting the truth. But don't actually give up!"
+];
+
 // Helper functions
 export const getRandomItem = (array) => {
   return array[Math.floor(Math.random() * array.length)];
@@ -455,3 +490,6 @@ export const getIconHerdingGiveUpMessage = (stats) => {
     .replace(/\{time\}/g, stats.timeElapsed)
     .replace(/\{speed\}/g, stats.peakSpeed.toFixed(1));
 };
+
+export const getRandomAdvisorResponse = () => getRandomItem(advisorResponses);
+export const getRandomClippyTip = () => getRandomItem(clippyTips);

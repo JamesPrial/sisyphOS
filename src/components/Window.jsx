@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 // eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
 import Draggable from 'react-draggable';
@@ -12,6 +12,7 @@ import TaskManager from './apps/TaskManager';
 import Help from './apps/Help';
 import ErrorSimulator from './apps/ErrorSimulator';
 import About from './apps/About';
+import PhilosophyAdvisor from './apps/PhilosophyAdvisor';
 
 const Window = ({ window }) => {
   const {
@@ -19,10 +20,13 @@ const Window = ({ window }) => {
     minimizeWindow,
     focusWindow,
     updateWindowPosition,
+    updateWindowSize,
     focusedWindowId,
   } = useOSStore();
 
   const nodeRef = useRef(null);
+  const [isResizing, setIsResizing] = useState(false);
+  const resizeStartRef = useRef({ width: 0, height: 0, mouseX: 0, mouseY: 0 });
 
   const isFocused = focusedWindowId === window.id;
   const isMinimized = window.minimized;
@@ -67,6 +71,9 @@ const Window = ({ window }) => {
       case 'about.exe':
         console.log('[Window] Rendering About');
         return <About />;
+      case 'Claude Camus.exe':
+        console.log('[Window] Rendering Claude Camus');
+        return <PhilosophyAdvisor />;
       default:
         console.log('[Window] No app component for:', fileName, '- using default fallback');
         return null;
@@ -90,6 +97,45 @@ const Window = ({ window }) => {
       focusWindow(window.id);
     }
   };
+
+  const handleResizeStart = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setIsResizing(true);
+    resizeStartRef.current = {
+      width: window.size.width,
+      height: window.size.height,
+      mouseX: e.clientX,
+      mouseY: e.clientY,
+    };
+    focusWindow(window.id);
+  };
+
+  useEffect(() => {
+    if (!isResizing) return;
+
+    const handleMouseMove = (e) => {
+      const deltaX = e.clientX - resizeStartRef.current.mouseX;
+      const deltaY = e.clientY - resizeStartRef.current.mouseY;
+
+      const newWidth = Math.max(400, resizeStartRef.current.width + deltaX);
+      const newHeight = Math.max(300, resizeStartRef.current.height + deltaY);
+
+      updateWindowSize(window.id, { width: newWidth, height: newHeight });
+    };
+
+    const handleMouseUp = () => {
+      setIsResizing(false);
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isResizing, window.id, updateWindowSize]);
 
   if (isMinimized) {
     return null;
@@ -245,6 +291,24 @@ const Window = ({ window }) => {
             )}
           </ErrorBoundary>
         </div>
+
+        {/* Resize Handle */}
+        <div
+          onMouseDown={handleResizeStart}
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            right: 0,
+            width: '20px',
+            height: '20px',
+            cursor: 'nwse-resize',
+            background: 'linear-gradient(135deg, transparent 50%, var(--color-border-light) 50%)',
+            borderBottomRightRadius: 'var(--radius-md)',
+            opacity: isFocused ? 0.6 : 0.3,
+            transition: 'opacity var(--transition-fast)',
+          }}
+          title="Resize"
+        />
         </motion.div>
       </div>
     </Draggable>

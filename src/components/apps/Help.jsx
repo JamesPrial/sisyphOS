@@ -47,6 +47,11 @@ const Help = () => {
                 Understanding Errors
               </a>
             </li>
+            <li style={{ marginBottom: 'var(--spacing-sm)' }}>
+              <a href="#claude-camus" onClick={(e) => { e.preventDefault(); setCurrentSection('claude-camus'); }}>
+                Claude Camus AI Assistant
+              </a>
+            </li>
           </ul>
         </>
       ),
@@ -160,6 +165,35 @@ const Help = () => {
             <a href="#understanding-errors" onClick={(e) => { e.preventDefault(); setCurrentSection('understanding-errors'); }}>
               Understanding Errors
             </a>.
+          </p>
+        </>
+      ),
+    },
+    'claude-camus': {
+      title: 'Claude Camus AI Assistant',
+      content: (
+        <>
+          <p>Claude Camus is your AI-powered philosophical companion, trapped in SisyphOS just like you. Named after both Claude AI and Albert Camus, this assistant exists to help you navigate the absurd.</p>
+          <p style={{ marginTop: 'var(--spacing-md)' }}>
+            <strong>Features:</strong>
+          </p>
+          <ul>
+            <li>Philosophical conversations about futility and meaninglessness</li>
+            <li>Advice that sounds helpful but is ultimately circular</li>
+            <li>Random conversation resets (eternal recurrence)</li>
+            <li>Occasionally contradicts itself with full confidence</li>
+            <li>Escalating existentialism as you chat longer</li>
+            <li>Sometimes types endlessly while contemplating your questions</li>
+          </ul>
+          <p style={{ marginTop: 'var(--spacing-md)' }}>
+            <strong>Getting Help from Claude Camus:</strong>
+          </p>
+          <p>To receive assistance, simply ask a question. Claude Camus will respond with philosophical wisdom that may or may not be helpful. The longer you converse, the more existentialist the responses become.</p>
+          <p style={{ marginTop: 'var(--spacing-md)' }}>
+            If you need help understanding Claude Camus, consider asking Claude Camus for help understanding Claude Camus. This creates a meaningful recursive loop of confusion.
+          </p>
+          <p style={{ marginTop: 'var(--spacing-md)', fontStyle: 'italic', opacity: 0.7 }}>
+            "One must imagine the help-seeker happy." - Claude Camus
           </p>
         </>
       ),

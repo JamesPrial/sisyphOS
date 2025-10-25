@@ -75,9 +75,13 @@ const Desktop = () => {
       appType: file.type,
     };
 
-    // Special size for task manager
+    // Special sizes for specific apps
     if (file.name === 'task_manager.exe') {
-      windowConfig.size = { width: 700, height: 550 };
+      windowConfig.size = { width: 800, height: 650 };
+    }
+
+    if (file.name === 'Claude Camus.exe') {
+      windowConfig.size = { width: 900, height: 700 };
     }
 
     console.log('[Desktop] Creating window with config:', windowConfig);

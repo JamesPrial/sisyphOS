@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import useOSStore from '../../store/osStore';
 import { useDesktopChaos } from '../../hooks/useDesktopChaos';
-import { iconHerdingMessages, getIconHerdingGiveUpMessage } from '../../data/philosophy';
+import { iconHerdingMessages, getIconHerdingGiveUpMessage, getRandomClippyTip } from '../../data/philosophy';
 
 const OrganizeDesktop = () => {
   const {
@@ -9,6 +9,7 @@ const OrganizeDesktop = () => {
     updateDesktopFilePosition,
     startDesktopChaos,
     stopDesktopChaos,
+    showClippy,
   } = useOSStore();
 
   const chaos = useDesktopChaos(desktopFiles, updateDesktopFilePosition);
@@ -37,6 +38,14 @@ const OrganizeDesktop = () => {
     setGameState('ended');
     stopDesktopChaos();
     chaos.stop();
+
+    // Show Clippy after giving up the chaos game
+    setTimeout(() => {
+      showClippy(
+        getRandomClippyTip(),
+        `Chaos game ended - ${chaos.stats.iconsReturned} icons returned`
+      );
+    }, 1500); // Delay so user sees the game end first
   };
 
   const handleTryAgain = () => {

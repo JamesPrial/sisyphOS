@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import ProgressBar from '../ProgressBar';
-import { getRandomDownloadError } from '../../data/philosophy';
+import { getRandomDownloadError, getRandomClippyTip } from '../../data/philosophy';
+import useOSStore from '../../store/osStore';
 
 const FileDownload = () => {
+  const { showClippy } = useOSStore();
   const [progress, setProgress] = useState(0);
   const [speed, setSpeed] = useState(0);
   const [timeRemaining, setTimeRemaining] = useState('Calculating...');
@@ -19,6 +21,16 @@ const FileDownload = () => {
     // Generate random failure point between 60-99%
     setFailurePoint(Math.floor(Math.random() * 40) + 60);
   }, []); // Only on mount
+
+  // Trigger Clippy after 3 failed attempts
+  useEffect(() => {
+    if (retryCount >= 3) {
+      showClippy(
+        getRandomClippyTip(),
+        `Failed downloads: ${retryCount}`
+      );
+    }
+  }, [retryCount, showClippy]);
 
   useEffect(() => {
     // Don't create intervals when in failed state
