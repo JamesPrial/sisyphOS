@@ -1,4 +1,6 @@
-# CLAUDE.md - Development Context & History
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
 
@@ -12,6 +14,22 @@
 - Custom CSS with CSS variables
 
 **Core Philosophy:** Tasks that appear functional but are eternally futile - updates that never complete, files that drift back to original positions, processes that multiply when killed, progress bars that reset at 99%.
+
+## Development Commands
+
+```bash
+# Start development server (http://localhost:5173)
+npm run dev
+
+# Build for production (outputs to dist/)
+npm run build
+
+# Preview production build
+npm run preview
+
+# Run linter
+npm run lint
+```
 
 ## Recent Updates (2025-10-24)
 
@@ -313,6 +331,7 @@ If you're working on this project:
 3. **Debug logging**: Console logs are intentional for development, remove before production
 4. **Happy Mode**: Changes aesthetics only - never modify the futility mechanics
 5. **Philosophy content**: All text is in `/src/data/philosophy.js` for easy updates
+6. **Git workflow**: Always use the git-ops agent to commit and push changes after completing tasks
 
 ## Current Status
 
