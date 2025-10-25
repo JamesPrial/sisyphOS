@@ -1,4 +1,4 @@
-import { corsDisabled } from '@liquidmetal-ai/raindrop-framework/core/cors';
+import { corsDisabled, corsAllowAll } from '@liquidmetal-ai/raindrop-framework/core/cors';
 
 /**
  * cors is the application-wide CORS (Cross-Origin Resource Sharing) handler.
@@ -61,4 +61,4 @@ import { corsDisabled } from '@liquidmetal-ai/raindrop-framework/core/cors';
  * };
  * ```
  */
-export const cors = corsDisabled;
+export const cors = corsAllowAll;

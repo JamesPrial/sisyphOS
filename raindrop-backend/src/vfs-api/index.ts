@@ -35,7 +35,7 @@ export default class VFSService extends Service<Env> {
 
     // CORS preflight
     if (method === 'OPTIONS') {
-      return this.corsResponse();
+      return this.corsResponse(request);
     }
 
     // Login endpoint - no auth required
@@ -104,13 +104,30 @@ export default class VFSService extends Service<Env> {
     return false;
   }
 
-  private corsResponse(): Response {
+  private corsResponse(request: Request): Response {
+    // Validate it's a proper preflight request
+    const origin = request.headers.get("Origin");
+    const requestMethod = request.headers.get("Access-Control-Request-Method");
+    const requestHeaders = request.headers.get("Access-Control-Request-Headers");
+
+    if (origin && requestMethod) {
+      // This is a CORS preflight request - return proper headers per Cloudflare Workers requirements
+      return new Response(null, {
+        status: 204, // Use 204 No Content for preflight (recommended)
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+          'Access-Control-Allow-Headers': requestHeaders || '*', // Echo requested headers or allow all
+          'Access-Control-Max-Age': '86400', // Cache preflight response for 24 hours
+        },
+      });
+    }
+
+    // Standard OPTIONS request (not a preflight)
     return new Response(null, {
       status: 200,
       headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        'Allow': 'GET, POST, PUT, DELETE, OPTIONS',
       },
     });
   }
