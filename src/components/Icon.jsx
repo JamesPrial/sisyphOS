@@ -84,6 +84,13 @@ const Icon = ({
       <div
         ref={nodeRef}
         onClick={handleClick}
+        onDoubleClick={(e) => {
+          // Also handle native double-click for better compatibility
+          if (!isDragging) {
+            setClickCount(0);
+            onDoubleClick?.();
+          }
+        }}
         className="no-select"
         style={{
           display: 'flex',
