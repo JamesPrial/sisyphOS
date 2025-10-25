@@ -72,9 +72,83 @@ npm run preview
 npm run lint
 ```
 
-## Recent Updates (2025-10-24)
+## Recent Updates
 
-### Progress Bar Behavior Enhancements
+### Icon Herding Minigame (2025-10-25)
+
+Completely replaced the OrganizeDesktop component's static organization feature with an interactive chaos minigame.
+
+**Concept:**
+Instead of organizing icons into a grid that slowly drifts back, users now play a Sisyphean minigame where desktop icons develop consciousness and autonomy. Icons move chaotically in random directions with increasing speed, and the user must drag them back to their starting positions before they escape.
+
+**Gameplay Mechanics:**
+
+**Physics System (`src/hooks/useDesktopChaos.js`):**
+- Icons move in random directions at 60fps using requestAnimationFrame
+- Direction changes every 2-4 seconds (randomized per icon)
+- Gradual speed acceleration: `speedMultiplier = 1 + secondsElapsed × 0.05` (caps at 8x)
+- Edge collision behavior: 50/50 chance to bounce OR wrap to opposite side (decided per icon)
+- Return detection: Icons within 50px of original position trigger a 2-3 second pause (false hope)
+- After pause, icons resume movement in a new random direction
+
+**Game States:**
+1. **Idle** - Start screen with instructions and philosophical flavor text
+2. **Active** - Live gameplay with real-time stats dashboard:
+   - Icons Returned (currently at home)
+   - Time Elapsed (MM:SS format)
+   - Peak Success (max icons held simultaneously)
+   - Speed Multiplier (current chaos level)
+   - Drag Attempts (total user actions)
+3. **Ended** - Final stats with randomized philosophical message
+
+**Integration Points:**
+- **Store (`src/store/osStore.js`)**: Added `isChaosMode` flag and control actions
+- **Boulder Physics (`src/hooks/useBoulderPhysics.js`)**: Automatically disables drift-back during chaos mode
+- **Desktop (`src/components/Desktop.jsx`)**: BoulderIcon enhanced to notify chaos system via global handlers
+- **Philosophy (`src/data/philosophy.js`)**: Added 10 unique "give up" messages with dynamic stat interpolation
+
+**Technical Implementation:**
+```javascript
+// Global handler pattern for cross-component communication
+window.__chaosHandlers = {
+  onDragStart: (fileId) => {},  // Track drag attempts
+  onDragStop: () => {},          // Release tracking
+  isActive: boolean              // Game state
+};
+```
+
+**Stats Tracking:**
+- `iconsReturned` - Icons currently at their origin
+- `maxReturned` - Peak simultaneous returns (moment of glory)
+- `totalAttempts` - Drag count (user struggle)
+- `timeElapsed` - Duration in seconds
+- `peakSpeed` - Highest speed multiplier reached
+
+**Philosophical Messages (Examples):**
+- "You briefly held {returned} icons in place. They're free now."
+- "Order maintained for {time} seconds. Entropy always wins."
+- "One must imagine the desktop organizer happy."
+- "Peak success: {maxReturned} icons simultaneously at rest. It was beautiful while it lasted."
+
+**Component File Locations:**
+- `/src/hooks/useDesktopChaos.js` - NEW: Chaos physics engine
+- `/src/components/apps/OrganizeDesktop.jsx` - REWRITTEN: Minigame UI with 3 states
+- `/src/store/osStore.js` - MODIFIED: Added chaos mode state
+- `/src/hooks/useBoulderPhysics.js` - MODIFIED: Chaos mode compatibility
+- `/src/components/Desktop.jsx` - MODIFIED: Enhanced drag tracking
+- `/src/data/philosophy.js` - MODIFIED: Added minigame messages
+
+**Philosophical Meaning:**
+This minigame embodies **escalating futility with false hope**. Unlike the other futile tasks:
+- No win condition exists (icons always resume moving)
+- Difficulty increases over time (exponential acceleration)
+- Success is temporary (2-3 second pause creates false hope)
+- Control is an illusion (you can't keep all icons home)
+- The only "victory" is acceptance (giving up and viewing stats)
+
+Like Sisyphus herding his boulder, you can momentarily succeed, but entropy always wins. The game speeds up, icons betray you faster, and the struggle itself becomes the meaning. One must imagine the desktop organizer happy.
+
+### Progress Bar Behavior Enhancements (2025-10-24)
 
 Enhanced the progress bar system to embody different philosophical concepts of futility through distinct mathematical behaviors:
 
@@ -160,11 +234,12 @@ Unlike the other progress bars that offer predictable futility, FileDownload emb
 
 ### Philosophical Distinctions
 
-The project now features three distinct approaches to futile progress:
+The project now features four distinct approaches to futile tasks:
 
 1. **Asymptotic Futility (SystemUpdate):** Never completing, always approaching but never arriving
 2. **Cyclical Futility (InstallWizard):** Completing infinitely, eternally recurring in identical cycles
 3. **Escalating Futility (FileDownload):** Random failure with increasing probability - the more you try, the less likely you are to succeed
+4. **Interactive Futility (OrganizeDesktop Minigame):** Active struggle against chaos with temporary victories, false hope, and inevitable entropy
 
 Each embodies a different philosophical perspective on meaningless tasks, enriching the absurdist experience.
 
@@ -253,12 +328,15 @@ Both libraries were trying to control CSS transforms on the same element, causin
 Zustand store manages:
 - `openWindows`: Array of window objects (id, title, content, position, size, zIndex)
 - `desktopFiles`: Array of desktop icons with positions (including originalX/Y for drift-back)
+- `isChaosMode`: Boolean flag for icon herding minigame state
 - `isHappyMode`: Aesthetic toggle (changes colors but not functionality)
 
 **Key Methods:**
 - `addWindow()`: Creates new window with auto-positioning (cascade effect)
 - `focusWindow()`: Updates z-index for window stacking
-- `updateDesktopFilePosition()`: Used by boulder physics for drift-back
+- `updateDesktopFilePosition()`: Used by boulder physics for drift-back and chaos minigame
+- `startDesktopChaos()`: Enables chaos mode (disables boulder physics)
+- `stopDesktopChaos()`: Disables chaos mode (re-enables boulder physics)
 
 ### Component Structure
 
@@ -290,13 +368,14 @@ Files without custom components (README.txt, boulder.exe) show fallback UI with 
 ### Absurdist Features
 
 1. **Boulder File Manager**: Desktop icons drift back to original positions after 2-second delay (useBoulderPhysics.js)
-2. **Sisyphean Progress Bars**: Three distinct futility mechanisms embodying different philosophical concepts:
+2. **Icon Herding Minigame**: Interactive chaos game where desktop icons move randomly with increasing speed. Drag them back to origin for a 2-3 second pause (false hope) before they resume. No win condition, only acceptance. (organize.exe → OrganizeDesktop.jsx)
+3. **Sisyphean Progress Bars**: Three distinct futility mechanisms embodying different philosophical concepts:
    - **SystemUpdate**: Asymptotic approach (Zeno's Paradox) - approaches 100% infinitely but never arrives, displays up to 4 decimal places (99.9876%)
    - **InstallWizard**: Eternal recurrence - auto-resets at 99% and repeats the cycle infinitely
    - **FileDownload**: Escalating failure - random failures (60-99%) with increasing probability on retry (30% base, +15% per retry, caps at 90%)
-3. **Futile Task Manager**: Processes respawn with higher CPU/memory, multiply after 3 kills (useProcessManager.js)
-4. **Philosophy Dialogs**: Inescapable dialogs with Camus quotes, ESC key disabled
-5. **Happy Mode**: Toggle that changes aesthetics (bright gradients, sparkles) but keeps futility intact
+4. **Futile Task Manager**: Processes respawn with higher CPU/memory, multiply after 3 kills (useProcessManager.js)
+5. **Philosophy Dialogs**: Inescapable dialogs with Camus quotes, ESC key disabled
+6. **Happy Mode**: Toggle that changes aesthetics (bright gradients, sparkles) but keeps futility intact
 
 ## Debugging Methodology Used
 
@@ -337,16 +416,17 @@ Processes respawn 500ms after kill with:
 **Apps:**
 - `/src/components/apps/TaskManager.jsx` - Process manager with futility
 - `/src/components/apps/SystemUpdate.jsx` - Endless 99% update
-- `/src/components/apps/OrganizeDesktop.jsx` - Temporary organization
+- `/src/components/apps/OrganizeDesktop.jsx` - Icon herding minigame (chaos mode)
 - `/src/components/apps/Help.jsx` - Circular reference documentation
 
 **Hooks:**
-- `/src/hooks/useBoulderPhysics.js` - File drift-back physics
+- `/src/hooks/useBoulderPhysics.js` - File drift-back physics (disabled during chaos mode)
+- `/src/hooks/useDesktopChaos.js` - Icon herding minigame chaos physics engine
 - `/src/hooks/useProcessManager.js` - Process respawn/multiply logic
 - `/src/hooks/usePhilosophyNotifications.js` - Random notification system
 
 **Data:**
-- `/src/data/philosophy.js` - Camus quotes, error messages, notifications
+- `/src/data/philosophy.js` - Camus quotes, error messages, notifications, minigame messages
 
 ## Development Notes
 
@@ -359,9 +439,11 @@ All styling uses CSS custom properties (src/styles/minimalist.css) for easy them
 
 ### Performance Considerations
 - Boulder physics uses requestAnimationFrame cleanup on unmount
+- Chaos minigame uses requestAnimationFrame for 60fps icon movement with proper cleanup
 - Process manager uses intervals that cleanup properly
 - Philosophy notifications have queue management to prevent spam
 - Window animations use CSS transforms (GPU-accelerated)
+- Icon positions update via Zustand store for efficient re-renders
 
 ## Future Developers / AI Assistants
 
@@ -376,18 +458,19 @@ If you're working on this project:
 
 ## Current Status
 
-**Last Updated:** 2025-10-24
+**Last Updated:** 2025-10-25
 **Status:** Fully functional, demo-ready for hackathon
 **Known Issues:** None
-**Build Status:** ✅ 403.41 kB bundle (122.99 kB gzipped)
+**Build Status:** ✅ 426.99 kB bundle (129.30 kB gzipped)
 
 All features tested and working:
 - ✅ Window creation and rendering
 - ✅ Desktop icon double-clicking
 - ✅ Window dragging, minimize, close
 - ✅ Boulder physics drift-back
+- ✅ **Icon herding minigame (NEW!)** - Chaotic icon movement with stats tracking
 - ✅ Task manager process futility
-- ✅ Progress bar resets
+- ✅ Progress bar resets (SystemUpdate, InstallWizard, FileDownload)
 - ✅ Philosophy notifications
 - ✅ Happy mode toggle
 - ✅ Welcome screen
