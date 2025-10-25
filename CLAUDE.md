@@ -153,14 +153,24 @@ Like Sisyphus herding his boulder, you can momentarily succeed, but entropy alwa
 Added an AI-powered philosophical advisor chatbot named "Claude Camus" - a double reference to both Claude AI (Anthropic) and existentialist philosopher Albert Camus.
 
 **Concept:**
-An AI assistant doomed to eternal philosophical conversations about futility. Powered by local Ollama LLM integration with graceful fallback to static responses when AI is unavailable.
+An on-desktop assistant and copilot that appears to help users navigate SisyphOS, but is just as trapped, confused, and lost as they are. Powered by local Ollama LLM integration with graceful fallback to static responses when AI is unavailable.
+
+**On-Desktop Assistant Role:**
+Claude Camus is positioned as the built-in help system for SisyphOS, like Clippy or Cortana, but existentialist:
+- Users expect assistance navigating OS features (task manager, file downloads, desktop organization)
+- Attempts to provide helpful guidance but reveals it's just as confused as the user
+- Confidently suggests solutions that are circular, contradictory, or acknowledge futility
+- Frames bugs and frustrating behaviors as "features" or philosophical exercises
+- References other broken OS features as if this is normal and expected
+- Example: When asked about respawning processes, suggests creating a loop to kill and respawn them repeatedly
 
 **AI Integration (`src/services/aiService.js`):**
 - **Local LLM**: Connects to Ollama running on localhost:11434
 - **Models**:
-  - `llama3.2:3b` for chat (better quality, coherent responses)
-  - `llama3.2:1b` for batch message generation (faster)
-- **System Prompt**: Instructs AI to be philosophical, embrace futility, reference Camus/Sisyphus, occasionally contradict itself
+  - `qwen2.5:7b-instruct-q5_k_m` for both chat and batch generation (upgraded 2025-10-25)
+  - Q5_K_M quantization provides excellent quality for philosophical/creative dialogue
+  - Superior to previous llama3.2 models - better nuance, 32K context window, handles contradictory/absurdist themes
+- **System Prompt**: Instructs AI to act as on-desktop assistant who tries to be helpful but is equally lost, philosophical, embraces futility, references Camus/Sisyphus, occasionally contradicts itself
 - **Graceful Degradation**: Falls back to static absurdist responses when Ollama is offline
 - **Connection Check**: Automatically detects Ollama availability on component mount
 
@@ -250,17 +260,21 @@ Generated message categories:
 **Setup Requirements:**
 ```bash
 # Install Ollama (https://ollama.ai)
-# Pull models
-ollama pull llama3.2:1b  # Fast model for batch generation
-ollama pull llama3.2:3b  # Better quality for chat
+# Pull model (upgraded to Qwen 2.5 7B Q5 for better quality)
+ollama pull qwen2.5:7b-instruct-q5_k_m  # High-quality Q5 quantization for philosophical dialogue
 
 # Ollama auto-starts on port 11434
 # Generate messages (optional - has fallbacks)
 npm run generate
 ```
 
+**Hardware Requirements:**
+- Recommended: 16GB+ VRAM for optimal performance
+- Model uses ~4.8GB VRAM (Q5_K_M quantization)
+- Runs at ~25-30 tokens/second on modern GPUs
+
 **Philosophical Meaning:**
-Claude Camus embodies the absurdity of seeking help from an AI that's just as trapped and confused as you are. The conversation resets randomly (eternal recurrence), advice contradicts itself (no objective truth), existentialism escalates (descent into meaninglessness), and the typing indicator sometimes lies (false hope). Yet through accepting this absurd dialogue, meaning emerges from the struggle itself. One must imagine the help-seeker happy.
+Claude Camus embodies the absurdity of seeking help from an AI assistant that's just as trapped, confused, and lost as you are. Positioned as your helpful guide to navigate SisyphOS, it confidently provides "assistance" that reveals its own futility. The conversation resets randomly (eternal recurrence), advice contradicts itself (no objective truth), bugs are framed as features (absurdist acceptance), existentialism escalates (descent into meaninglessness), and the typing indicator sometimes lies (false hope). Like asking Sisyphus for boulder-pushing advice, you're consulting someone equally doomed to the same struggle. Yet through accepting this absurd dialogue, meaning emerges from the shared futility. One must imagine both the help-seeker and the helper happy.
 
 ### Progress Bar Behavior Enhancements (2025-10-24)
 
